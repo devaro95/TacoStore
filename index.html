@@ -5,7 +5,7 @@
 <style>
 /* Layout: sticky top bar → energy-burst hero → infinite card carousel → newsletter band; cart as right drawer */
 :root{
-  --bg:#F3F3F0; --surface:#FFFFFF; --ink:#161A2B; --muted:#62677A; --line:#E7E6E2;
+  --bg:#FAFAF8; --surface:#FFFFFF; --ink:#161A2B; --muted:#62677A; --line:#E8E8E6;
   --accent:#F06A1A; --accent-ink:#FFFFFF; --deep:#1C2F7A; --ok:#1F8A4C; --sold:#B4232F;
   color-scheme:light;
   --f-display:"Dela Gothic One","Arial Black",system-ui,sans-serif;
@@ -289,7 +289,7 @@ body.detail-open{overflow:hidden}
 
 /* Hero rediseño: papel liso + retícula fina + marcas de imprenta + cinta inferior */
 .bar{box-shadow:none;border-bottom:1px solid var(--line)}
-.hero{background:#F4F2ED;border-bottom:0;flex-direction:column;align-items:stretch;justify-content:center}
+.hero{background:#FAFAF8;border-bottom:0;flex-direction:column;align-items:stretch;justify-content:center}
 .hero{min-height:calc(100svh - var(--bar-h,57px) - 41px);overflow:hidden}
 .hero::before,.hero::after{position:absolute;inset:auto;width:auto;background:none;filter:none;mask-image:none;-webkit-mask-image:none;pointer-events:none;font-family:var(--f-display);font-weight:400;line-height:.8;white-space:nowrap;letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1.5px rgba(22,26,43,.10);font-size:clamp(7rem,23vw,22rem)}
 .hero::before{content:"SOBRES";top:-.12em;left:-.08em}
@@ -302,7 +302,7 @@ body.detail-open{overflow:hidden}
 .hero h1 em{color:var(--accent);text-decoration:none}
 .hero .cta{border-radius:999px;padding:13px 22px}
 .hero .cta:hover{transform:none}
-.ticker{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--bar-h,57px));z-index:19;background:var(--ink);color:#F4F2ED;overflow:hidden;white-space:nowrap;font-family:var(--f-num);font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;padding-block:12px}
+.ticker{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--bar-h,57px));z-index:19;background:var(--ink);color:#FAFAF8;overflow:hidden;white-space:nowrap;font-family:var(--f-num);font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;padding-block:12px}
 .ticker div{display:inline-flex;animation:tick 40s linear infinite}
 .ticker span{padding-inline:22px}
 .ticker span:nth-child(even){color:var(--accent);padding-inline:0}
@@ -311,12 +311,12 @@ body.detail-open{overflow:hidden}
 @media (max-width:760px){.hero-meta{inset:14px 16px auto;font-size:.62rem}.hero-meta span:last-child{display:none}.hero::before{top:.1em}.hero::after{bottom:-.05em}.hero .eyebrow{border-radius:12px;line-height:1.6;max-width:300px}}
 
 /* Footer a todo el ancho, mismo color que la cinta */
-.site-foot{background:var(--ink);color:#F4F2ED;border-top:0;box-shadow:0 0 0 100vmax var(--ink);clip-path:inset(0 -100vmax -100vmax);margin-top:40px;padding-block:40px 24px}
-.site-foot .logo{color:#F4F2ED}
-.f-brand p,.f-col h3,.f-bottom{color:rgba(244,242,237,.6)}
-.f-col a{color:#F4F2ED}
+.site-foot{background:var(--ink);color:#FAFAF8;border-top:0;box-shadow:0 0 0 100vmax var(--ink);clip-path:inset(0 -100vmax -100vmax);margin-top:40px;padding-block:40px 24px}
+.site-foot .logo{color:#FAFAF8}
+.f-brand p,.f-col h3,.f-bottom{color:rgba(250,250,248,.6)}
+.f-col a{color:#FAFAF8}
 .f-col a:hover{color:var(--accent)}
-.f-bottom{border-top-color:rgba(244,242,237,.14)}
+.f-bottom{border-top-color:rgba(250,250,248,.14)}
 </style>
 
 <header class="bar">
