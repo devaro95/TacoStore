@@ -1,10 +1,16 @@
 // Emails de pedido vía Resend (https://resend.com/docs/api-reference/emails/send-email)
 // Variables: RESEND_API_KEY, EMAIL_FROM (opcional), STORE_EMAIL (aviso a la tienda, opcional)
 // Sin dominio verificado, Resend solo permite enviar desde onboarding@resend.dev y solo al email de tu cuenta.
-// Limpia espacios, comillas o backticks pegados por error en las variables de Vercel
-const clean = (v) => (v || "").trim().replace(/^[\s"'`]+|[\s"'`]+$/g, "");
-const FROM = clean(process.env.EMAIL_FROM) || "TacoStore <onboarding@resend.dev>";
-const STORE_EMAIL = clean(process.env.STORE_EMAIL);
+// Saca el email limpio aunque la variable de Vercel traiga espacios, comillas, "STORE_EMAIL=" u otros restos
+const EMAIL_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/;
+const pickEmail = (v) => (String(v || "").match(EMAIL_RE) || [""])[0];
+const RAW_FROM = String(process.env.EMAIL_FROM || "").trim();
+const FROM = RAW_FROM && pickEmail(RAW_FROM)
+  ? (RAW_FROM.includes("<") ? RAW_FROM.replace(/^[\s"'`]+|[\s"'`]+$/g, "") : pickEmail(RAW_FROM))
+  : "TacoStore <onboarding@resend.dev>";
+const STORE_EMAIL = pickEmail(process.env.STORE_EMAIL);
+// Para diagnóstico: cómo llega la variable (longitud y caracteres raros visibles)
+export const STORE_EMAIL_DEBUG = JSON.stringify(String(process.env.STORE_EMAIL ?? "(no definida)"));
 
 const eur = (n) => Number(n).toLocaleString("es-ES", { style: "currency", currency: "EUR" });
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -73,7 +79,7 @@ export async function sendOrderEmails(order) {
   const results = await Promise.allSettled(jobs);
   const summary = results
     .map((r, i) => `${labels[i]}: ${r.status === "fulfilled" ? "ok" : r.reason.message.slice(0, 300)}`)
-    .join(" · ");
+    .join(" · ") + (results.some((r) => r.status === "rejected") ? ` · [v4 STORE_EMAIL=${STORE_EMAIL_DEBUG} → ${STORE_EMAIL}]` : "");
   console.log("Emails:", summary);
   return summary;
 }
