@@ -1,7 +1,10 @@
 // Emails de pedido vía Resend (https://resend.com/docs/api-reference/emails/send-email)
 // Variables: RESEND_API_KEY, EMAIL_FROM (opcional), STORE_EMAIL (aviso a la tienda, opcional)
 // Sin dominio verificado, Resend solo permite enviar desde onboarding@resend.dev y solo al email de tu cuenta.
-const FROM = process.env.EMAIL_FROM || "TacoStore <onboarding@resend.dev>";
+// Limpia espacios, comillas o backticks pegados por error en las variables de Vercel
+const clean = (v) => (v || "").trim().replace(/^[\s"'`]+|[\s"'`]+$/g, "");
+const FROM = clean(process.env.EMAIL_FROM) || "TacoStore <onboarding@resend.dev>";
+const STORE_EMAIL = clean(process.env.STORE_EMAIL);
 
 const eur = (n) => Number(n).toLocaleString("es-ES", { style: "currency", currency: "EUR" });
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -54,13 +57,13 @@ export async function sendOrderEmails(order) {
       to: order.email,
       subject: `Pedido nº ${order.id} confirmado · TacoStore`,
       html: orderHTML(order, { title: "¡Gracias por tu pedido!", intro: "Hemos recibido tu pago. Te avisaremos cuando salga el envío." }),
-      ...(process.env.STORE_EMAIL && { reply_to: process.env.STORE_EMAIL }),
+      ...(STORE_EMAIL && { reply_to: STORE_EMAIL }),
     }));
   }
-  if (process.env.STORE_EMAIL) {
+  if (STORE_EMAIL) {
     labels.push("tienda");
     jobs.push(send({
-      to: process.env.STORE_EMAIL,
+      to: STORE_EMAIL,
       subject: `Nuevo pedido nº ${order.id} · ${eur(order.total)}`,
       html: orderHTML(order, { title: "Nuevo pedido", intro: `Cliente: ${esc(order.email)}` }),
       ...(order.email && { reply_to: order.email }),
