@@ -85,3 +85,22 @@ export async function sendOrderEmails(order) {
   console.log("Emails:", summary);
   return summary;
 }
+
+// Aviso de envío al cliente (lanza si falla, para mostrar el error en el panel)
+export async function sendShippedEmail(order) {
+  if (!process.env.RESEND_API_KEY) throw new Error("RESEND_API_KEY no configurada");
+  if (!order.email) throw new Error("El pedido no tiene email");
+  const t = String(order.tracking || "").trim();
+  const trackingHTML = /^https?:\/\//i.test(t)
+    ? `<a href="${esc(t)}" style="color:#1C2F7A">Seguir mi envío</a>`
+    : `<b style="font-family:monospace;font-size:16px">${esc(t)}</b>`;
+  return send({
+    to: order.email,
+    subject: `Tu pedido nº ${order.id} va en camino · TacoStore`,
+    html: orderHTML(order, {
+      title: "¡Tu pedido va en camino!",
+      intro: `Ya lo hemos enviado. Número de seguimiento: ${trackingHTML}`,
+    }),
+    ...(STORE_EMAIL && { reply_to: STORE_EMAIL }),
+  });
+}

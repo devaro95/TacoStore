@@ -282,6 +282,7 @@ function orderHTML(o){
     <div class="manage"><h4>Estado</h4>
       <select data-act="status" class="s-${o.status}" aria-label="Estado del pedido #${o.id}">${opts}</select>
       <button class="more" data-act="more">${o.tracking || o.notes ? "Ver seguimiento / notas" : "Añadir seguimiento / notas"}</button>
+      ${o.shipped_email_at ? `<span class="sub">✉ Aviso de envío enviado ${fdate(o.shipped_email_at)} · <button class="more" data-act="resend">Reenviar</button></span>` : ""}
       <span class="flash" hidden>Guardado</span></div>
     <div class="extra" hidden>
       <div><label>Nº de seguimiento</label><input data-f="tracking" value="${esc(o.tracking)}"></div>
@@ -293,6 +294,12 @@ function orderHTML(o){
     </div>
   </article>`;
 }
+function flash(id, msg, ok = true){
+  const f = document.querySelector(`.order[data-id="${id}"] .flash`);
+  if (!f) return;
+  f.textContent = msg; f.style.color = ok ? "" : "var(--sold)"; f.hidden = false;
+  clearTimeout(f._t); f._t = setTimeout(() => f.hidden = true, ok ? 2500 : 6000);
+}
 async function updateOrder(card, patch){
   const id = +card.dataset.id, o = orders.find(x => x.id === id);
   if (patch.status === "enviado" && !o.shipped_at) patch.shipped_at = new Date().toISOString();
@@ -300,8 +307,32 @@ async function updateOrder(card, patch){
   if (error) { alert("No se pudo guardar: " + error.message); return renderOrders(); }
   Object.assign(o, data);
   renderOrders();
-  const again = document.querySelector(`.order[data-id="${id}"] .flash`);
-  if (again) { again.hidden = false; setTimeout(() => again.hidden = true, 1500); }
+  flash(id, "Guardado");
+  // Enviado + nº de seguimiento → aviso al cliente (solo la primera vez)
+  if (o.status === "enviado" && !o.shipped_email_at) {
+    if (o.tracking) notifyShipped(id);
+    else {
+      const c = document.querySelector(`.order[data-id="${id}"]`);
+      c.querySelector(".extra").hidden = false; c.querySelector('[data-f="tracking"]').focus();
+      flash(id, "Añade el nº de seguimiento para avisar al cliente", false);
+    }
+  }
+}
+async function notifyShipped(id, force = false){
+  const o = orders.find(x => x.id === id);
+  flash(id, "Enviando aviso al cliente…");
+  try {
+    const { data:{ session } } = await sb.auth.getSession();
+    const r = await fetch("/api/order-shipped", {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${session?.access_token}` },
+      body: JSON.stringify({ id, force }),
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || "Error");
+    if (d.shipped_email_at) o.shipped_email_at = d.shipped_email_at;
+    renderOrders(); flash(id, `Email de envío enviado a ${o.email}`);
+  } catch (err) { flash(id, "No se envió el aviso: " + err.message, false); }
 }
 $("orders").addEventListener("change", e => {
   if (e.target.dataset.act === "status") updateOrder(e.target.closest(".order"), { status: e.target.value });
@@ -309,6 +340,7 @@ $("orders").addEventListener("change", e => {
 $("orders").addEventListener("click", e => {
   const card = e.target.closest(".order"); if (!card) return;
   if (e.target.dataset.act === "more") card.querySelector(".extra").hidden ^= 1;
+  if (e.target.dataset.act === "resend" && confirm("¿Reenviar al cliente el email de envío?")) notifyShipped(+card.dataset.id, true);
   if (e.target.dataset.act === "save") updateOrder(card, {
     tracking: card.querySelector('[data-f="tracking"]').value.trim() || null,
     notes: card.querySelector('[data-f="notes"]').value.trim() || null,
