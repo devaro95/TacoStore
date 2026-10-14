@@ -309,6 +309,14 @@ body.detail-open{overflow:hidden}
 @keyframes tick{to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.ticker div{animation:none}}
 @media (max-width:760px){.hero-meta{inset:14px 16px auto;font-size:.62rem}.hero-meta span:last-child{display:none}.hero::before{top:.1em}.hero::after{bottom:-.05em}.hero .eyebrow{border-radius:12px;line-height:1.6;max-width:300px}}
+
+/* Footer a todo el ancho, mismo color que la cinta */
+.site-foot{background:var(--ink);color:#F4F2ED;border-top:0;box-shadow:0 0 0 100vmax var(--ink);clip-path:inset(0 -100vmax -100vmax);margin-top:40px;padding-block:40px 24px}
+.site-foot .logo{color:#F4F2ED}
+.f-brand p,.f-col h3,.f-bottom{color:rgba(244,242,237,.6)}
+.f-col a{color:#F4F2ED}
+.f-col a:hover{color:var(--accent)}
+.f-bottom{border-top-color:rgba(244,242,237,.14)}
 </style>
 
 <header class="bar">
