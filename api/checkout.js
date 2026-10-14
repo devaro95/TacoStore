@@ -1,7 +1,9 @@
 import Stripe from "stripe";
-import { CATALOG, SHIP_CENTS, FREE_SHIP_CENTS } from "./_lib/catalog.js";
+import { db } from "./_lib/db.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const SHIP_CENTS = 395;
+const FREE_SHIP_CENTS = 5000;
 const MAX_QTY = 20;
 
 const json = (body, status = 200) =>
@@ -14,19 +16,35 @@ export async function POST(request) {
   } catch {
     return json({ error: "Petición no válida" }, 400);
   }
-  if (!Array.isArray(items) || !items.length) return json({ error: "El carrito está vacío" }, 400);
+  if (!Array.isArray(items) || !items.length || items.length > 50) return json({ error: "El carrito está vacío" }, 400);
+
+  // Precio y stock reales desde Supabase: el navegador solo envía id + cantidad
+  const ids = [...new Set(items.map((i) => String(i.id)))];
+  if (ids.some((id) => !/^[a-z0-9-]{1,64}$/.test(id))) return json({ error: "Producto no válido" }, 400);
+  let rows;
+  try {
+    rows = await db(`products?select=id,name,price,stock_qty,active&id=in.(${ids.join(",")})`);
+  } catch (err) {
+    console.error("Error leyendo productos:", err.message);
+    return json({ error: "No se pudo iniciar el pago" }, 500);
+  }
+  const byId = Object.fromEntries(rows.map((r) => [r.id, r]));
 
   const line_items = [];
+  const cart = [];
   let subtotal = 0;
   for (const { id, qty } of items) {
-    const p = CATALOG[id];
+    const p = byId[id];
     const q = Math.floor(Number(qty));
-    if (!p || !p.stock) return json({ error: `Producto no disponible: ${id}` }, 400);
-    if (!(q >= 1 && q <= MAX_QTY)) return json({ error: `Cantidad no válida: ${id}` }, 400);
-    subtotal += p.cents * q;
+    if (!p || !p.active || p.stock_qty < 1) return json({ error: `Producto agotado: ${p?.name || id}` }, 400);
+    if (!(q >= 1 && q <= MAX_QTY)) return json({ error: `Cantidad no válida: ${p.name}` }, 400);
+    if (q > p.stock_qty) return json({ error: `Solo quedan ${p.stock_qty} de ${p.name}` }, 400);
+    const cents = Math.round(Number(p.price) * 100);
+    subtotal += cents * q;
+    cart.push([id, q]);
     line_items.push({
       quantity: q,
-      price_data: { currency: "eur", unit_amount: p.cents, product_data: { name: p.name, metadata: { id } } },
+      price_data: { currency: "eur", unit_amount: cents, product_data: { name: p.name, metadata: { id } } },
     });
   }
 
@@ -51,7 +69,7 @@ export async function POST(request) {
       ],
       phone_number_collection: { enabled: true },
       locale: "es",
-      metadata: { cart: JSON.stringify(items.map(({ id, qty }) => [id, Math.floor(qty)])) },
+      metadata: { cart: JSON.stringify(cart) },
       success_url: `${origin}/?pedido=ok&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/?pedido=cancelado`,
     });

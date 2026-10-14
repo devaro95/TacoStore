@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="referrer" content="no-referrer">
+<title>TacoStore · Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#F3F3F0; --surface:#FFFFFF; --ink:#161A2B; --muted:#62677A; --line:#E7E6E2;
+  --accent:#F06A1A; --accent-ink:#FFFFFF; --deep:#1C2F7A; --ok:#1F8A4C; --sold:#B4232F; --warn:#B7791F;
+  --f-display:"Dela Gothic One","Arial Black",system-ui,sans-serif;
+  --f-body:"Zen Kaku Gothic New",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-num:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+.wrap{max-width:1240px;margin-inline:auto;padding-inline:16px}
+.logo{font-family:var(--f-display);font-size:1.2rem;display:flex;align-items:center;gap:.45em;line-height:1;white-space:nowrap}
+.logo i{width:1.95em;height:1.95em;font-size:.62em;border-radius:.3em;background:var(--accent);display:grid;place-items:center;transform:rotate(-8deg);font-style:normal;color:var(--accent-ink)}
+.logo small{font-family:var(--f-body);font-weight:700;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-left:.4em}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.sub{color:var(--muted);font-size:.82rem}
+.btn{border:1.5px solid var(--ink);background:transparent;border-radius:999px;padding:8px 16px;font-weight:700;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(.95);color:var(--accent-ink)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+input,select,textarea{border:1.5px solid var(--line);border-radius:8px;background:var(--surface);padding:8px 10px;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+label{display:block;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+a{color:var(--deep)}
+
+/* Login */
+.login{min-height:100vh;display:grid;place-items:center;padding:16px}
+.login form{background:var(--surface);border-radius:10px;box-shadow:0 4px 24px rgba(22,26,43,.08);padding:32px 28px;width:100%;max-width:360px;display:grid;gap:16px}
+.login .logo{justify-content:center;font-size:1.5rem;margin-bottom:8px}
+.err{color:var(--sold);font-size:.88rem;margin:0}
+
+/* Barra + tabs */
+.bar{position:sticky;top:0;z-index:5;background:var(--surface);box-shadow:0 1px 0 rgba(22,26,43,.06),0 4px 14px rgba(22,26,43,.06)}
+.bar .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:10px}
+.who{display:flex;align-items:center;gap:12px;font-size:.85rem;color:var(--muted)}
+.tabs{display:flex;gap:4px}
+.tabs button{border:0;background:transparent;padding:10px 14px 12px;font-weight:700;font-size:.9rem;color:var(--muted);border-bottom:3px solid transparent}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabs .n{font-family:var(--f-num);font-size:.75rem;background:var(--bg);border-radius:999px;padding:1px 7px;margin-left:6px}
+main{padding-block:20px 48px}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.stat{background:var(--surface);border-radius:10px;padding:12px 16px}
+.stat b{display:block;font-family:var(--f-num);font-size:1.4rem;letter-spacing:-.02em}
+.stat span{font-size:.72rem;color:var(--muted);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:.82rem;font-weight:700}
+.chip[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:#fff}
+.tools input[type=search]{max-width:260px;margin-left:auto}
+.empty{padding:36px;text-align:center;color:var(--muted);background:var(--surface);border-radius:10px}
+
+/* Pedidos: todo visible en la fila */
+.orders{display:grid;gap:10px}
+.order{background:var(--surface);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:90px 1.1fr 1.2fr 1.6fr 110px 170px;gap:16px;align-items:start}
+.order h4{margin:0 0 4px;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.order .id{font-family:var(--f-num);font-weight:700}
+.order .name{font-weight:700}
+.order ul{list-style:none;margin:0;padding:0}
+.order li{display:flex;justify-content:space-between;gap:10px;font-size:.9rem}
+.order li b{font-family:var(--f-num);font-weight:700;margin-right:6px}
+.order .money{text-align:right}
+.order .money .tot{font-family:var(--f-num);font-weight:700;font-size:1.15rem}
+.order .addr{font-size:.9rem;line-height:1.45}
+.order .manage{display:grid;gap:6px}
+.order .manage select{font-weight:700;font-size:.85rem;padding:6px 8px}
+.order .more{border:0;background:none;padding:0;color:var(--deep);font-size:.82rem;text-align:left;text-decoration:underline}
+.order .extra{grid-column:1/-1;display:grid;grid-template-columns:1fr 2fr auto;gap:10px;align-items:end;border-top:1px dashed var(--line);padding-top:12px}
+.s-pendiente_envio{border-color:#F5C9A6!important;background:#FDF1E8!important;color:#9A3F07}
+.s-enviado{border-color:#C3D0F5!important;background:#EEF2FD!important;color:var(--deep)}
+.s-entregado{border-color:#BCE3CB!important;background:#EAF7EF!important;color:var(--ok)}
+.s-cancelado,.s-reembolsado{border-color:#EDC2C6!important;background:#FBEDEE!important;color:var(--sold)}
+.test{font-size:.62rem;font-weight:700;color:var(--warn);border:1px solid currentColor;border-radius:4px;padding:0 4px;margin-left:6px;vertical-align:2px}
+.flash{font-size:.8rem;font-weight:700;color:var(--ok)}
+
+/* Stock */
+.list{background:var(--surface);border-radius:10px;overflow:auto}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;background:#FAFAF8;white-space:nowrap}
+td.r,th.r{text-align:right}
+.qty{display:inline-flex;align-items:center;border:1.5px solid var(--line);border-radius:999px;overflow:hidden}
+.qty button{border:0;background:transparent;width:32px;height:32px;font-size:1.1rem;font-weight:700}
+.qty button:hover{color:var(--accent)}
+.qty input{width:56px;border:0;border-radius:0;text-align:center;padding:4px;font-family:var(--f-num);font-weight:700;-moz-appearance:textfield;appearance:textfield}
+.qty input::-webkit-outer-spin-button,.qty input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.price-in{width:100px;text-align:right;font-family:var(--f-num)}
+.badge{display:inline-block;border-radius:999px;padding:2px 10px;font-size:.75rem;font-weight:700;white-space:nowrap}
+.b-ok{background:#EAF7EF;color:var(--ok)}
+.b-low{background:#FDF5E6;color:var(--warn)}
+.b-out{background:#FBEDEE;color:var(--sold)}
+.b-off{background:var(--bg);color:var(--muted)}
+tr.off td:not(:last-child){opacity:.55}
+.switch{width:auto;accent-color:var(--accent);transform:scale(1.2)}
+
+@media (max-width:980px){
+  .order{grid-template-columns:1fr 1fr}
+  .order .money{text-align:left}
+  .order .extra{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .order{grid-template-columns:1fr}
+  .tools input[type=search]{max-width:none;margin-left:0}
+  .hide-sm{display:none}
+  .stats{grid-template-columns:repeat(auto-fit,minmax(100px,1fr))}
+  th,td{padding:8px}
+}
+</style>
+</head>
+<body>
+
+<div class="login" id="loginView" hidden>
+  <form id="loginForm" autocomplete="on">
+    <div class="logo"><i>TS</i>TacoStore</div>
+    <div><label for="user">Usuario</label><input id="user" name="username" autocomplete="username" required autocapitalize="none" spellcheck="false"></div>
+    <div><label for="pass">Contraseña</label><input id="pass" name="password" type="password" autocomplete="current-password" required></div>
+    <p class="err" id="loginErr" role="alert"></p>
+    <button class="btn primary" id="loginBtn" type="submit">Entrar</button>
+  </form>
+</div>
+
+<div id="appView" hidden>
+  <header class="bar"><div class="wrap">
+    <div class="top">
+      <div class="logo"><i>TS</i>TacoStore<small>Panel</small></div>
+      <div class="who"><span id="whoName" class="hide-sm"></span><button class="btn" id="logout">Salir</button></div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button role="tab" id="tabOrders" aria-selected="true" aria-controls="ordersView">Pedidos<span class="n" id="nOrders">0</span></button>
+      <button role="tab" id="tabStock" aria-selected="false" aria-controls="stockView">Stock<span class="n" id="nStock">0</span></button>
+    </nav>
+  </div></header>
+
+  <main class="wrap">
+    <!-- Pedidos -->
+    <section id="ordersView" role="tabpanel" aria-labelledby="tabOrders">
+      <div class="stats">
+        <div class="stat"><span>Pendientes de envío</span><b id="stPend">—</b></div>
+        <div class="stat"><span>Pedidos</span><b id="stCount">—</b></div>
+        <div class="stat"><span>Ventas</span><b id="stSales">—</b></div>
+      </div>
+      <div class="tools">
+        <div class="chips" id="chips" role="group" aria-label="Filtrar por estado"></div>
+        <input id="q" type="search" placeholder="Buscar nombre, email, ciudad o nº" aria-label="Buscar pedidos">
+      </div>
+      <div class="orders" id="orders"></div>
+      <div class="empty" id="ordersEmpty" hidden>No hay pedidos con este filtro.</div>
+    </section>
+
+    <!-- Stock -->
+    <section id="stockView" role="tabpanel" aria-labelledby="tabStock" hidden>
+      <div class="stats">
+        <div class="stat"><span>Productos</span><b id="skCount">—</b></div>
+        <div class="stat"><span>Unidades</span><b id="skUnits">—</b></div>
+        <div class="stat"><span>Agotados</span><b id="skOut">—</b></div>
+        <div class="stat"><span>Valor del stock</span><b id="skValue">—</b></div>
+      </div>
+      <div class="tools">
+        <div class="chips" id="skChips" role="group" aria-label="Filtrar stock"></div>
+        <input id="skQ" type="search" placeholder="Buscar producto o código" aria-label="Buscar productos">
+      </div>
+      <div class="list">
+        <table>
+          <thead><tr><th>Producto</th><th class="hide-sm">Juego</th><th class="r">Precio (€)</th><th>Cantidad</th><th>Estado</th><th class="hide-sm">En tienda</th></tr></thead>
+          <tbody id="skRows"></tbody>
+        </table>
+      </div>
+      <p class="sub">Los cambios se guardan solos y se ven en la tienda al recargar. Las ventas descuentan stock automáticamente.</p>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+// Clave publicable: es pública por diseño. Pedidos y edición de stock están protegidos por RLS (solo rol admin).
+const sb = supabase.createClient("https://gdzsouhiabrhozgpckzc.supabase.co", "sb_publishable_o7eB7QScWy7F2DKJeMPndw_Fc3Qmdpz");
+const ADMIN_DOMAIN = "tacostore.app"; // usuario "tacostore" → tacostore@tacostore.app
+const LOW = 3; // umbral de "pocas unidades"
+
+const STATUS = { pendiente_envio:"Pendiente de envío", enviado:"Enviado", entregado:"Entregado", cancelado:"Cancelado", reembolsado:"Reembolsado" };
+const GAMES = { fw:"Fusion World", masters:"Masters" };
+const $ = id => document.getElementById(id);
+const eur = n => Number(n||0).toLocaleString("es-ES",{style:"currency",currency:"EUR"});
+const esc = s => String(s ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
+const fdate = d => new Date(d).toLocaleString("es-ES",{day:"2-digit",month:"short",year:"2-digit",hour:"2-digit",minute:"2-digit"});
+
+let orders = [], products = [], filter = "pendiente_envio", skFilter = "all";
+
+/* ---------- Acceso ---------- */
+async function boot(){
+  const { data:{ session } } = await sb.auth.getSession();
+  if (session?.user.app_metadata?.role === "admin") showApp(session.user);
+  else { if (session) await sb.auth.signOut(); showLogin(); }
+}
+function showLogin(){ $("appView").hidden = true; $("loginView").hidden = false; $("user").focus(); }
+function showApp(user){
+  $("loginView").hidden = true; $("appView").hidden = false;
+  $("whoName").textContent = user.user_metadata?.username || user.email;
+  loadOrders(); loadProducts();
+}
+$("loginForm").addEventListener("submit", async e=>{
+  e.preventDefault();
+  const u = $("user").value.trim().toLowerCase();
+  const email = u.includes("@") ? u : `${u}@${ADMIN_DOMAIN}`;
+  $("loginErr").textContent = ""; $("loginBtn").disabled = true;
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: $("pass").value });
+  $("loginBtn").disabled = false; $("pass").value = "";
+  if (error) { $("loginErr").textContent = "Usuario o contraseña incorrectos"; return; }
+  if (data.user.app_metadata?.role !== "admin") { await sb.auth.signOut(); $("loginErr").textContent = "Sin permisos de acceso"; return; }
+  showApp(data.user);
+});
+$("logout").onclick = () => sb.auth.signOut();
+sb.auth.onAuthStateChange(ev => { if (ev === "SIGNED_OUT") { orders = []; products = []; $("orders").innerHTML = ""; $("skRows").innerHTML = ""; showLogin(); } });
+
+/* ---------- Tabs ---------- */
+function setTab(t){
+  const isOrders = t === "orders";
+  $("tabOrders").setAttribute("aria-selected", isOrders); $("tabStock").setAttribute("aria-selected", !isOrders);
+  $("ordersView").hidden = !isOrders; $("stockView").hidden = isOrders;
+  try { localStorage.setItem("ts-admin-tab", t); } catch(e){}
+}
+$("tabOrders").onclick = () => setTab("orders");
+$("tabStock").onclick = () => setTab("stock");
+try { if (localStorage.getItem("ts-admin-tab") === "stock") setTab("stock"); } catch(e){}
+
+/* ---------- Pedidos ---------- */
+async function loadOrders(){
+  const { data, error } = await sb.from("orders").select("*").order("created_at",{ascending:false}).limit(500);
+  if (error) { $("orders").innerHTML = `<div class="empty">Error cargando pedidos: ${esc(error.message)}</div>`; return; }
+  orders = data; renderOrders();
+}
+function renderOrders(){
+  const live = orders.filter(o => !["cancelado","reembolsado"].includes(o.status));
+  $("stPend").textContent = orders.filter(o => o.status === "pendiente_envio").length;
+  $("stCount").textContent = live.length;
+  $("stSales").textContent = eur(live.reduce((s,o) => s + Number(o.total), 0));
+  $("nOrders").textContent = orders.filter(o => o.status === "pendiente_envio").length;
+
+  $("chips").innerHTML = [["all","Todos"], ...Object.entries(STATUS)].map(([k,l]) => {
+    const n = k === "all" ? orders.length : orders.filter(o => o.status === k).length;
+    return `<button class="chip" data-k="${k}" aria-pressed="${filter === k}">${l} <span class="num">${n}</span></button>`;
+  }).join("");
+
+  const q = $("q").value.trim().toLowerCase();
+  const list = orders.filter(o => (filter === "all" || o.status === filter) && (!q ||
+    String(o.id) === q.replace("#","") ||
+    [o.name, o.email, o.address?.city, o.address?.postal_code].some(v => (v||"").toLowerCase().includes(q))));
+  $("ordersEmpty").hidden = list.length > 0;
+  $("orders").innerHTML = list.map(orderHTML).join("");
+}
+function orderHTML(o){
+  const a = o.address || {};
+  const addr = [a.line1, a.line2, `${a.postal_code||""} ${a.city||""}`.trim(), a.state].filter(Boolean).map(esc).join("<br>");
+  const items = (o.items||[]).map(i => `<li><span><b>${i.qty}×</b>${esc(i.name)}</span><span class="num">${eur(i.total)}</span></li>`).join("");
+  const opts = Object.entries(STATUS).map(([k,l]) => `<option value="${k}" ${o.status===k?"selected":""}>${l}</option>`).join("");
+  return `<article class="order" data-id="${o.id}">
+    <div><h4>Pedido</h4><div class="id">#${o.id}${o.livemode ? "" : '<span class="test">TEST</span>'}</div><div class="sub">${fdate(o.created_at)}</div></div>
+    <div><h4>Cliente</h4><div class="name">${esc(o.name)}</div>
+      <div class="sub"><a href="mailto:${esc(o.email)}">${esc(o.email)}</a></div>
+      ${o.phone ? `<div class="sub"><a href="tel:${esc(o.phone)}">${esc(o.phone)}</a></div>` : ""}</div>
+    <div><h4>Dirección</h4><div class="addr">${addr || '<span class="sub">—</span>'}</div></div>
+    <div><h4>Productos</h4><ul>${items}</ul></div>
+    <div class="money"><h4>Total</h4><div class="tot">${eur(o.total)}</div>
+      <div class="sub">${Number(o.shipping) ? `Envío ${eur(o.shipping)}` : "Envío gratis"}</div></div>
+    <div class="manage"><h4>Estado</h4>
+      <select data-act="status" class="s-${o.status}" aria-label="Estado del pedido #${o.id}">${opts}</select>
+      <button class="more" data-act="more">${o.tracking || o.notes ? "Ver seguimiento / notas" : "Añadir seguimiento / notas"}</button>
+      <span class="flash" hidden>Guardado</span></div>
+    <div class="extra" hidden>
+      <div><label>Nº de seguimiento</label><input data-f="tracking" value="${esc(o.tracking)}"></div>
+      <div><label>Notas internas</label><input data-f="notes" value="${esc(o.notes)}"></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn primary" data-act="save">Guardar</button>
+        ${o.payment_intent ? `<a class="sub" href="https://dashboard.stripe.com/${o.livemode ? "" : "test/"}payments/${esc(o.payment_intent)}" target="_blank" rel="noopener noreferrer">Stripe ↗</a>` : ""}
+      </div>
+    </div>
+  </article>`;
+}
+async function updateOrder(card, patch){
+  const id = +card.dataset.id, o = orders.find(x => x.id === id);
+  if (patch.status === "enviado" && !o.shipped_at) patch.shipped_at = new Date().toISOString();
+  const { data, error } = await sb.from("orders").update(patch).eq("id", id).select().single();
+  if (error) { alert("No se pudo guardar: " + error.message); return renderOrders(); }
+  Object.assign(o, data);
+  renderOrders();
+  const again = document.querySelector(`.order[data-id="${id}"] .flash`);
+  if (again) { again.hidden = false; setTimeout(() => again.hidden = true, 1500); }
+}
+$("orders").addEventListener("change", e => {
+  if (e.target.dataset.act === "status") updateOrder(e.target.closest(".order"), { status: e.target.value });
+});
+$("orders").addEventListener("click", e => {
+  const card = e.target.closest(".order"); if (!card) return;
+  if (e.target.dataset.act === "more") card.querySelector(".extra").hidden ^= 1;
+  if (e.target.dataset.act === "save") updateOrder(card, {
+    tracking: card.querySelector('[data-f="tracking"]').value.trim() || null,
+    notes: card.querySelector('[data-f="notes"]').value.trim() || null,
+  });
+});
+$("chips").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) { filter = b.dataset.k; renderOrders(); } });
+$("q").addEventListener("input", renderOrders);
+
+/* ---------- Stock ---------- */
+async function loadProducts(){
+  const { data, error } = await sb.from("products").select("*").order("sort");
+  if (error) { $("skRows").innerHTML = `<tr><td colspan="6" class="empty">Error cargando stock: ${esc(error.message)}</td></tr>`; return; }
+  products = data; renderStock();
+}
+const stateOf = p => !p.active ? ["b-off","Oculto"] : p.stock_qty < 1 ? ["b-out","Agotado"] : p.stock_qty <= LOW ? ["b-low","Quedan pocos"] : ["b-ok","En stock"];
+function renderStock(){
+  const act = products.filter(p => p.active);
+  $("skCount").textContent = act.length;
+  $("skUnits").textContent = act.reduce((s,p) => s + p.stock_qty, 0);
+  $("skOut").textContent = act.filter(p => p.stock_qty < 1).length;
+  $("skValue").textContent = eur(act.reduce((s,p) => s + p.stock_qty * Number(p.price), 0));
+  const alerts = act.filter(p => p.stock_qty <= LOW).length;
+  $("nStock").textContent = alerts; $("nStock").hidden = !alerts;
+
+  const F = { all:["Todos", () => true], low:["Pocos o agotados", p => p.active && p.stock_qty <= LOW], fw:["Fusion World", p => p.game==="fw"], masters:["Masters", p => p.game==="masters"] };
+  $("skChips").innerHTML = Object.entries(F).map(([k,[l,fn]]) => `<button class="chip" data-k="${k}" aria-pressed="${skFilter===k}">${l} <span class="num">${products.filter(fn).length}</span></button>`).join("");
+
+  const q = $("skQ").value.trim().toLowerCase();
+  const list = products.filter(F[skFilter][1]).filter(p => !q || p.name.toLowerCase().includes(q) || p.code.toLowerCase().includes(q) || p.id.includes(q));
+  $("skRows").innerHTML = list.length ? list.map(p => {
+    const [cls, txt] = stateOf(p);
+    return `<tr data-id="${esc(p.id)}" class="${p.active ? "" : "off"}">
+      <td><strong>${esc(p.name)}</strong><div class="sub num">${esc(p.code)} · ${esc(p.id)}</div></td>
+      <td class="hide-sm">${GAMES[p.game] || esc(p.game)}</td>
+      <td class="r"><input class="price-in" data-f="price" type="number" min="0" step="0.05" inputmode="decimal" value="${Number(p.price).toFixed(2)}" aria-label="Precio de ${esc(p.name)}"></td>
+      <td><div class="qty"><button data-q="-1" aria-label="Restar uno">−</button><input data-f="stock_qty" type="number" min="0" step="1" inputmode="numeric" value="${p.stock_qty}" aria-label="Cantidad de ${esc(p.name)}"><button data-q="1" aria-label="Sumar uno">+</button></div></td>
+      <td><span class="badge ${cls}">${txt}</span> <span class="flash" hidden>✓</span></td>
+      <td class="hide-sm"><input class="switch" type="checkbox" data-f="active" ${p.active ? "checked" : ""} aria-label="Mostrar ${esc(p.name)} en la tienda"></td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="6" class="sub" style="text-align:center;padding:28px">Ningún producto coincide.</td></tr>`;
+}
+async function updateProduct(id, patch){
+  const p = products.find(x => x.id === id);
+  const { data, error } = await sb.from("products").update(patch).eq("id", id).select().single();
+  if (error) { alert("No se pudo guardar: " + error.message); return renderStock(); }
+  Object.assign(p, data); renderStock();
+  const f = document.querySelector(`#skRows tr[data-id="${CSS.escape(id)}"] .flash`);
+  if (f) { f.hidden = false; setTimeout(() => f.hidden = true, 1200); }
+}
+$("skRows").addEventListener("change", e => {
+  const tr = e.target.closest("tr[data-id]"); if (!tr) return;
+  const f = e.target.dataset.f;
+  if (f === "price") { const v = Math.max(0, Math.round(parseFloat(e.target.value.replace(",", ".")) * 100) / 100); if (!isNaN(v)) updateProduct(tr.dataset.id, { price: v }); else renderStock(); }
+  if (f === "stock_qty") { const v = Math.max(0, parseInt(e.target.value, 10)); if (!isNaN(v)) updateProduct(tr.dataset.id, { stock_qty: v }); else renderStock(); }
+  if (f === "active") updateProduct(tr.dataset.id, { active: e.target.checked });
+});
+$("skRows").addEventListener("click", e => {
+  const b = e.target.closest("[data-q]"); if (!b) return;
+  const id = b.closest("tr").dataset.id, p = products.find(x => x.id === id);
+  updateProduct(id, { stock_qty: Math.max(0, p.stock_qty + Number(b.dataset.q)) });
+});
+$("skChips").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) { skFilter = b.dataset.k; renderStock(); } });
+$("skQ").addEventListener("input", renderStock);
+
+boot();
+</script>
+</body>
+</html>

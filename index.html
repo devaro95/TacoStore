@@ -572,7 +572,7 @@ const bestsellers = ["fb01-box","fs01","fb01-pack","fb03-box"];
 $("bestGrid").innerHTML = bestsellers.map((id,i)=>`<li><div class="rank">${String(i+1).padStart(2,"0")}<small>${i===0?"El más vendido":"Puesto "+(i+1)}</small></div>${cardHTML(byId[id],false)}</li>`).join("");
 
 function change(id, a){
-  if(a==="inc") cart[id]++;
+  if(a==="inc"){ const max = byId[id].qty; if(max != null && cart[id] >= max) toast(`Solo quedan ${max} unidades`); else cart[id]++; }
   if(a==="dec") cart[id]--;
   if(a==="rm" || cart[id]<=0) delete cart[id];
   save(); render();
@@ -852,6 +852,31 @@ $("newsForm").addEventListener("submit", e=>{
 
 let tt; function toast(t){ const el=$("toast"); el.textContent=t; el.classList.add("show"); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove("show"),1800); }
 render();
+
+/* Precios y stock reales desde Supabase (la lista "products" de arriba es solo el respaldo si falla la conexión) */
+const SB_URL = "https://gdzsouhiabrhozgpckzc.supabase.co", SB_KEY = "sb_publishable_o7eB7QScWy7F2DKJeMPndw_Fc3Qmdpz";
+(async function syncStock(){
+  try{
+    const r = await fetch(`${SB_URL}/rest/v1/products?select=id,name,code,game,color,price,stock_qty&order=sort`, {headers:{apikey:SB_KEY}});
+    if(!r.ok) return;
+    const rows = await r.json();
+    if(!rows.length) return;
+    const live = new Set(rows.map(x => x.id));
+    rows.forEach(x => {
+      let p = byId[x.id];
+      if(!p){ p = {id:x.id, img: x.id.endsWith("-pack") ? IMG_FB09 : IMG_FB08}; products.push(p); byId[x.id] = p; }
+      Object.assign(p, {name:x.name, code:x.code, game:x.game, color:x.color, price:Number(x.price), stock:x.stock_qty > 0, qty:x.stock_qty});
+    });
+    for(let i = products.length - 1; i >= 0; i--) if(!live.has(products[i].id)){ delete byId[products[i].id]; products.splice(i,1); }
+    for(const k in cart){ const p = byId[k]; if(!p || !p.stock) delete cart[k]; else if(cart[k] > p.qty) cart[k] = p.qty; }
+    save();
+    $("track").innerHTML = products.map(p=>cardHTML(p,false)).join("") + products.map(p=>cardHTML(p,true)).join("");
+    $("cAll").textContent = products.length;
+    $("cFw").textContent = products.filter(p => p.game === "fw").length;
+    $("cMasters").textContent = products.filter(p => p.game === "masters").length;
+    renderCatalog(true); render();
+  }catch(e){ /* sin conexión: se queda la lista local */ }
+})();
 </script>
 
 </body></html>
