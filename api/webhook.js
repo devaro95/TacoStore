@@ -76,5 +76,10 @@ async function fulfillOrder(sessionId) {
   const [saved] = await res.json(); // vacío si el pedido ya existía (evento reenviado)
   if (!saved) return console.log("Pedido ya registrado:", s.id);
   console.log("Pedido guardado:", saved.id);
-  await sendOrderEmails(saved);
+  const email_status = await sendOrderEmails(saved);
+  await fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${saved.id}`, {
+    method: "PATCH",
+    headers: { apikey: SUPABASE_KEY, authorization: `Bearer ${SUPABASE_KEY}`, "content-type": "application/json" },
+    body: JSON.stringify({ email_status }),
+  }).catch((e) => console.error("No se pudo guardar email_status:", e.message));
 }

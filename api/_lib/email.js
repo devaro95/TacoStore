@@ -44,10 +44,12 @@ async function send(payload) {
 }
 
 // Nunca lanza: un fallo de email no debe hacer que Stripe reintente el webhook (el pedido ya está guardado).
+// Devuelve un resumen legible del resultado ("cliente: ok · tienda: Resend 403 …") para guardarlo en el pedido.
 export async function sendOrderEmails(order) {
-  if (!process.env.RESEND_API_KEY) return console.warn("RESEND_API_KEY no configurada: no se envían emails");
-  const jobs = [];
+  if (!process.env.RESEND_API_KEY) return "RESEND_API_KEY no configurada";
+  const jobs = [], labels = [];
   if (order.email) {
+    labels.push("cliente");
     jobs.push(send({
       to: order.email,
       subject: `Pedido nº ${order.id} confirmado · TacoStore`,
@@ -56,6 +58,7 @@ export async function sendOrderEmails(order) {
     }));
   }
   if (process.env.STORE_EMAIL) {
+    labels.push("tienda");
     jobs.push(send({
       to: process.env.STORE_EMAIL,
       subject: `Nuevo pedido nº ${order.id} · ${eur(order.total)}`,
@@ -63,6 +66,11 @@ export async function sendOrderEmails(order) {
       ...(order.email && { reply_to: order.email }),
     }));
   }
+  if (!jobs.length) return "sin destinatarios (falta STORE_EMAIL y email del cliente)";
   const results = await Promise.allSettled(jobs);
-  results.forEach((r) => r.status === "rejected" && console.error("Error enviando email:", r.reason.message));
+  const summary = results
+    .map((r, i) => `${labels[i]}: ${r.status === "fulfilled" ? "ok" : r.reason.message.slice(0, 300)}`)
+    .join(" · ");
+  console.log("Emails:", summary);
+  return summary;
 }
