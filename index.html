@@ -436,8 +436,8 @@ body.detail-open{overflow:hidden}
     <div>
       <div class="hero-brand" aria-hidden="true"><div class="logo" id="brandGhost"><img class="logo-img" src="/logo.webp?v=2" alt="TacoStore" width="563" height="600"></div></div>
       <div class="eyebrow">Dragon Ball Super Card Game <b>·</b> Masters y Fusion World</div>
-      <h1><em>Sobres</em>, cajas y mazos sellados para hacer crecer tu colección</h1>
-      <p>Solo producto sellado, con envío desde Madrid. Tú pones las manos, nosotros el sobre sin abrir.</p>
+      <h1>Cada <em>sobre</em> es una sorpresa para tu colección</h1>
+      <p>Sobres y cajas originales de Dragon Ball, siempre precintados. Elige, ábrelos y descubre qué cartas te tocan.</p>
       <a class="cta" href="#catalogo">Ver catálogo →</a>
     </div>
     <div class="hero-stack" aria-hidden="true"><span></span><span></span><span></span></div>
@@ -448,9 +448,9 @@ body.detail-open{overflow:hidden}
 <section class="info" id="info">
   <div class="wrap">
     <h2>Producto <em>sellado</em>.<br>Nada más.</h2>
-    <p class="lead">Solo vendemos cajas, sobres y mazos sin abrir de Dragon Ball Super Card Game. Sin cartas sueltas: lo que abres es lo que viene de fábrica.</p>
+    <p class="lead">Solo vendemos sobres y cajas sin abrir de Dragon Ball Super Card Game. Sin cartas sueltas: lo que abres es lo que viene de fábrica.</p>
     <ul>
-      <li><b>100 % sellado</b><span>Cajas, sobres y mazos de inicio sin abrir.</span></li>
+      <li><b>100 % sellado</b><span>Sobres y cajas sin abrir, tal cual salen de fábrica.</span></li>
       <li><b>Masters y Fusion World</b><span>Los dos juegos, cada uno con su catálogo.</span></li>
       <li><b>Desde Madrid</b><span>Envíos a toda España, gratis desde 50 €.</span></li>
       <li><b>Pago seguro</b><span>Pago con tarjeta cifrado y protegido.</span></li>
@@ -462,7 +462,7 @@ body.detail-open{overflow:hidden}
   <div class="section-head" id="catalogo">
     <div class="head-text">
       <h2>Catálogo</h2>
-      <p>Cajas de sobres, sobres sueltos y mazos de inicio de Masters y Fusion World, más accesorios para jugar. Cada producto indica su precio con IVA y si queda stock.</p>
+      <p>Cajas de sobres y sobres sueltos de Masters y Fusion World. Cada producto indica su precio con IVA y si queda stock.</p>
     </div>
     <div class="arrows">
       <button id="prev" aria-label="Productos anteriores">←</button>
@@ -598,14 +598,7 @@ const products = [
   {id:"fb01-pack",name:"Sobre FB01",                       code:"FB01", price:4.50,  stock:true,  color:"red"},
   {id:"fb02-box", name:"Caja de sobres FB02 (24 sobres)", code:"FB02", price:92.50, stock:false, color:"blue"},
   {id:"fb02-pack",name:"Sobre FB02",                       code:"FB02", price:4.50,  stock:true,  color:"blue"},
-  {id:"fs01",     name:"Mazo de inicio FS01",              code:"FS01", price:13.95, stock:true,  color:"red"},
-  {id:"fs02",     name:"Mazo de inicio FS02",              code:"FS02", price:13.95, stock:false, color:"blue"},
-  {id:"fs03",     name:"Mazo de inicio FS03",              code:"FS03", price:13.95, stock:true,  color:"green"},
-  {id:"fs04",     name:"Mazo de inicio FS04",              code:"FS04", price:13.95, stock:true,  color:"yellow"},
   {id:"fb03-box", name:"Caja de sobres FB03 (24 sobres)", code:"FB03", price:94.95, stock:true,  color:"green"},
-  {id:"sleeves",  name:"Fundas oficiales (60 uds.)",       code:"ACC",  price:9.95,  stock:true,  color:"black"},
-  {id:"mat",      name:"Tapete de juego",                  code:"ACC",  price:24.95, stock:false, color:"black"},
-  {id:"deckbox",  name:"Caja de mazo",                     code:"ACC",  price:7.50,  stock:true,  color:"yellow"},
   // Masters (productos de ejemplo: sustituir por el stock real)
   {id:"bt24-box", name:"Caja de sobres BT24 (24 sobres)", code:"BT24", price:99.95, stock:true,  color:"red",    game:"masters"},
   {id:"bt24-pack",name:"Sobre BT24",                       code:"BT24", price:4.75,  stock:true,  color:"red",    game:"masters"},
@@ -711,7 +704,7 @@ $("track").innerHTML = products.map(p=>cardHTML(p,false)).join("") + products.ma
 })();
 
 // Ranking de ejemplo: sustituir por los datos reales de ventas
-const bestsellers = ["fb01-box","fs01","fb01-pack","fb03-box"];
+const bestsellers = ["fb01-box","fb08-box","fb01-pack","fb03-box"];
 $("bestGrid").innerHTML = bestsellers.map((id,i)=>`<li><div class="rank">${String(i+1).padStart(2,"0")}<small>${i===0?"El más vendido":"Puesto "+(i+1)}</small></div>${cardHTML(byId[id],false)}</li>`).join("");
 
 function change(id, a){
@@ -723,9 +716,8 @@ function change(id, a){
 // Descripción por tipo de producto (texto provisional hasta tener las fichas reales)
 function descOf(p){
   if(p.desc) return p.desc;
-  if(p.id.endsWith("-box")) return `Caja precintada de ${p.code} con 24 sobres de 12 cartas cada uno. La opción más rentable para abrir la colección completa o preparar un draft con amigos.`;
+  if(p.id.endsWith("-box")) return `Caja precintada de ${p.code} con 24 sobres de 12 cartas cada uno. La opción más rentable para completar la colección.`;
   if(p.id.endsWith("-pack")) return `Sobre individual de ${p.code} con 12 cartas. Ideal para probar suerte con la colección sin comprar la caja entera.`;
-  if(p.code.startsWith("FS")) return `Mazo de inicio ${p.code}, preconstruido y listo para jugar. Buen punto de partida para aprender el juego o como base para tu propio mazo.`;
   return `${p.name} para Dragon Ball Super Card Game ${GAMES[p.game]}.`;
 }
 
