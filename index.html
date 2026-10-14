@@ -332,7 +332,8 @@ body.detail-open{overflow:hidden}
 
 /* Aviso newsletter */
 .nl-pop{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:45;width:min(560px,calc(100% - 32px));transform:translate(-50%,calc(100% + 40px));transition:transform .5s cubic-bezier(.2,.8,.2,1);background:var(--ink);color:#FAFAF8;border-radius:18px;border:1px solid rgba(250,250,248,.14);padding:22px 22px 20px;box-shadow:0 18px 40px rgba(22,26,43,.25)}
-.nl-pop.show{transform:translate(-50%,0)}
+.nl-pop{visibility:hidden;transition:transform .5s cubic-bezier(.2,.8,.2,1),visibility 0s .5s}
+.nl-pop.show{transform:translate(-50%,0);visibility:visible;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .nl-pop h3{font-family:var(--f-display);font-weight:400;font-size:1.35rem;line-height:1.15;margin:0 36px 6px 0}
 .nl-pop h3 em{font-style:normal;color:var(--accent)}
 .nl-pop p{margin:0 0 14px;color:rgba(250,250,248,.65);font-size:.92rem}
@@ -347,6 +348,39 @@ body.detail-open{overflow:hidden}
 .nl-pop .msg.err{color:#FF9A8A}.nl-pop .msg.good{color:#7FE0A8}
 @media (max-width:480px){.nl-pop form{flex-direction:column}}
 @media (prefers-reduced-motion:reduce){.nl-pop{transition:none}}
+
+/* Pedido realizado */
+.ord{padding-block:clamp(40px,7vw,80px) 0}
+.ord-hero{text-align:center;max-width:640px;margin:0 auto clamp(32px,5vw,48px)}
+.ord-check{width:64px;height:64px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;margin:0 auto 20px}
+.ord-check svg{width:30px;height:30px}
+.ord-hero h1{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,5.5vw,3.6rem);line-height:1;margin:0 0 .3em;text-wrap:balance}
+.ord-hero h1 em{font-style:normal;color:var(--accent)}
+.ord-hero p{color:var(--muted);margin:0}
+.ord-card{max-width:760px;margin-inline:auto;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.ord-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:var(--ink);color:#FAFAF8}
+.ord-meta div{padding:16px 20px}
+.ord-meta div+div{border-left:1px solid rgba(250,250,248,.14)}
+.ord-meta small{display:block;font-family:var(--f-num);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(250,250,248,.55);margin-bottom:4px}
+.ord-meta b{font-family:var(--f-num);font-size:.95rem;word-break:break-all}
+.ord-sec{padding:20px 24px;border-top:1px solid var(--line)}
+.ord-sec:first-of-type{border-top:0}
+.ord-sec h3{font-family:var(--f-num);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:700}
+.ord-items{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ord-items li{display:flex;justify-content:space-between;gap:16px}
+.ord-items .q{font-family:var(--f-num);color:var(--muted);margin-right:8px}
+.ord-items .t,.ord-sum dd{font-family:var(--f-num);white-space:nowrap}
+.ord-sum{display:grid;grid-template-columns:1fr auto;gap:6px 16px;margin:0}
+.ord-sum dt{color:var(--muted)}.ord-sum dd{margin:0;text-align:right}
+.ord-sum .tot{color:var(--ink);font-weight:700;font-size:1.1rem;padding-top:8px;border-top:1px solid var(--line)}
+.ord-two{display:grid;grid-template-columns:1fr 1fr}
+.ord-two .ord-sec+.ord-sec{border-left:1px solid var(--line)}
+.ord-two p{margin:0;line-height:1.6}
+.ord-note{max-width:760px;margin:20px auto 0;text-align:center;color:var(--muted);font-size:.9rem}
+.ord-actions{display:flex;justify-content:center;margin:24px 0 clamp(48px,7vw,80px)}
+.ord-actions .cta{border-radius:999px;padding:13px 22px}
+.ord-load{text-align:center;color:var(--muted);padding:80px 0}
+@media (max-width:600px){.ord-meta{grid-template-columns:1fr 1fr}.ord-meta div:nth-child(3){grid-column:1/-1;border-left:0;border-top:1px solid rgba(250,250,248,.14)}.ord-two{grid-template-columns:1fr}.ord-two .ord-sec+.ord-sec{border-left:0;border-top:1px solid var(--line)}}
 </style>
 
 <header class="bar">
@@ -469,6 +503,11 @@ body.detail-open{overflow:hidden}
     <div class="cat-more" id="catMore" aria-live="polite"></div>
     <footer class="site-foot" data-footer></footer>
   </div>
+</div>
+
+<div id="viewOrder" hidden>
+  <div class="wrap ord" id="ordBody"><p class="ord-load">Cargando tu pedido…</p></div>
+  <div class="wrap"><footer class="site-foot" data-footer></footer></div>
 </div>
 
 <section class="detail" id="detail" aria-hidden="true" aria-label="Detalle del producto">
@@ -697,7 +736,8 @@ function showView(v){
   currentView = v;
   $("viewHome").hidden = v !== "home";
   $("viewCatalog").hidden = v !== "catalog";
-  document.body.classList.toggle("view-catalog", v === "catalog");
+  $("viewOrder").hidden = v !== "order";
+  document.body.classList.toggle("view-catalog", v === "catalog" || v === "order");
   document.querySelectorAll(".topnav a").forEach(a => a.classList.toggle("is-active", a.dataset.view === v));
   if(detailId) closeDetail();
   scrollTo(0, 0);
@@ -867,7 +907,7 @@ $("checkout").onclick=async()=>{
 };
 {
   const q=new URLSearchParams(location.search).get("pedido");
-  if(q==="ok"){ cart={}; save(); setTimeout(()=>toast("¡Pago completado! Te enviaremos la confirmación por email"),300); }
+  if(q==="ok"){ cart={}; save(); const sid=new URLSearchParams(location.search).get("session_id"); if(sid) showOrder(sid); else setTimeout(()=>toast("¡Pago completado! Te enviaremos la confirmación por email"),300); }
   else if(q==="cancelado") setTimeout(()=>toast("Pago cancelado. Tu carrito sigue guardado"),300);
   if(q) history.replaceState(null,"",location.pathname);
 }
@@ -880,11 +920,60 @@ $("newsForm").addEventListener("submit", e=>{
 });
 
 
+
+/* Pantalla de pedido realizado */
+const escH = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+async function showOrder(sid){
+  window.__orderView = true;
+  showView("order");
+  const box = $("ordBody");
+  let o = null;
+  for(let i=0;i<5;i++){
+    try{
+      const r = await fetch(`/api/order?session_id=${encodeURIComponent(sid)}`);
+      if(r.ok){ o = await r.json(); if(o.number || i===4) break; }
+      else if(r.status !== 500) break;
+    }catch(e){}
+    await new Promise(res=>setTimeout(res,1500));
+  }
+  if(!o){ box.innerHTML = `<div class="ord-hero"><h1>¡Gracias por tu compra!</h1><p>Tu pago se ha completado. Te enviaremos la confirmación del pedido por email.</p></div><div class="ord-actions"><a class="cta" href="#inicio" data-view="home">Seguir comprando →</a></div>`; return; }
+  const date = new Date(o.date).toLocaleDateString("es-ES",{day:"numeric",month:"long",year:"numeric"});
+  box.innerHTML = `
+    <div class="ord-hero">
+      <div class="ord-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h1>¡Gracias por tu compra!<br><em>Pronto en tus manos.</em></h1>
+      <p>Hemos recibido tu pedido y ya lo estamos preparando. Te enviaremos un email a <b>${escH(o.email)}</b> con la confirmación y otro cuando salga de Madrid.</p>
+    </div>
+    <div class="ord-card">
+      <div class="ord-meta">
+        <div><small>Nº de pedido</small><b>${o.number ? escH(o.number) : "En proceso"}</b></div>
+        <div><small>Fecha</small><b>${escH(date)}</b></div>
+        <div><small>Ref. de pago</small><b>${escH(o.ref)}</b></div>
+      </div>
+      <div class="ord-sec">
+        <h3>Tu compra</h3>
+        <ul class="ord-items">${o.items.map(i=>`<li><span><span class="q">${i.qty}×</span>${escH(i.name)}</span><span class="t">${eur(i.total)}</span></li>`).join("")}</ul>
+      </div>
+      <div class="ord-sec">
+        <dl class="ord-sum">
+          <dt>Subtotal</dt><dd>${eur(o.subtotal)}</dd>
+          <dt>Envío</dt><dd>${o.shipping ? eur(o.shipping) : "Gratis"}</dd>
+          <dt class="tot">Total pagado</dt><dd class="tot">${eur(o.total)}</dd>
+        </dl>
+      </div>
+      <div class="ord-two">
+        <div class="ord-sec"><h3>Envío a</h3><p>${[o.name, ...o.address].filter(Boolean).map(escH).join("<br>")}</p></div>
+        <div class="ord-sec"><h3>Contacto</h3><p>${[o.email, o.phone].filter(Boolean).map(escH).join("<br>")}</p></div>
+      </div>
+    </div>
+    <p class="ord-note">Precios con IVA (21 %) incluido. Entrega estimada en 2–5 días laborables. Guarda tu nº de pedido por si necesitas contactarnos.</p>
+    <div class="ord-actions"><a class="cta" href="#inicio" data-view="home">Seguir comprando →</a></div>`;
+}
 /* Aviso de newsletter que sube desde abajo */
 (function(){
   const pop=$("nlPop"), KEY="ts-nl-dismissed";
   let seen=false; try{ seen=!!localStorage.getItem(KEY); }catch(e){}
-  if(seen) return;
+  if(seen || window.__orderView) return;
   const close=()=>{ pop.classList.remove("show"); pop.setAttribute("aria-hidden","true"); try{ localStorage.setItem(KEY,"1"); }catch(e){} };
   setTimeout(()=>{ pop.classList.add("show"); pop.setAttribute("aria-hidden","false"); }, 2500);
   $("nlClose").onclick=close;
