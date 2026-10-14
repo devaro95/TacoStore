@@ -47,23 +47,6 @@ button{font:inherit;cursor:pointer}
 .hero p{max-width:44ch;color:var(--muted);margin:0 0 22px}
 .cta{display:inline-flex;gap:10px;align-items:center;background:var(--ink);color:var(--bg);border:0;border-radius:2px;padding:11px 18px;font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;transition:transform .15s}
 .cta:hover{transform:translateX(3px);background:var(--accent);color:var(--accent-ink)}
-/* Banner centrado con degradado naranja → blanco */
-.hero{background:
-  radial-gradient(ellipse 55% 40% at 50% 42%,rgba(255,250,244,.85),rgba(255,250,244,0) 72%),
-  radial-gradient(ellipse 140% 45% at 50% 108%,rgba(232,98,24,.85),rgba(232,98,24,0) 70%),
-  linear-gradient(to bottom,#FBEADB 0%,#F8D6BA 40%,#F3AE7A 78%,#EC8A45 100%)}
-/* Textura: trama de puntos tipo manga + grano de papel */
-/* Textura: foco cenital sobre el logo (haz central + dos laterales) y pared de estuco */
-.hero::before{content:"";position:absolute;inset:-12% -10% 0;pointer-events:none;filter:blur(26px);
-  background:
-    conic-gradient(from 180deg at 50% -6%,transparent 0deg 168deg,rgba(255,255,255,.55) 174deg 186deg,transparent 192deg 360deg),
-    conic-gradient(from 180deg at 50% -6%,transparent 0deg 150deg,rgba(255,255,255,.22) 155deg 160deg,transparent 165deg 195deg,rgba(255,255,255,.22) 200deg 205deg,transparent 210deg 360deg);
-  -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 80%);mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 80%)}
-.hero::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.5;
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.008 .012' numOctaves='4' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .62 0 0 0 0 .38 0 0 0 0 .22 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .3 0 0 0 0 .18 0 0 0 .3 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:600px 600px,180px 180px}
 .hero .wrap{grid-template-columns:1fr;justify-items:center;text-align:center}
 .hero .eyebrow{border-left:0;padding-left:0}
 .hero h1{margin-inline:auto;font-family:var(--f-body);font-weight:900;letter-spacing:-.025em;font-size:clamp(1.7rem,3.6vw,2.7rem);max-width:30ch}
@@ -303,6 +286,30 @@ body.detail-open{overflow:hidden}
   .cart-btn{font-size:0;gap:0;padding-left:12px}
   .cart-btn svg{margin-right:6px}
 }
+
+/* Hero rediseño: papel liso + retícula fina + marcas de imprenta + cinta inferior */
+.bar{box-shadow:none;border-bottom:1px solid var(--line)}
+.hero{background:#F4F2ED;border-bottom:0;flex-direction:column;align-items:stretch;justify-content:center}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:linear-gradient(rgba(22,26,43,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(22,26,43,.06) 1px,transparent 1px);
+  background-size:64px 64px;background-position:center;
+  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 45%,#000 30%,transparent 85%);mask-image:radial-gradient(ellipse 70% 60% at 50% 45%,#000 30%,transparent 85%)}
+.hero::after{content:none}
+.hero>.wrap{flex:1;display:grid;align-content:center}
+.hero-meta{position:absolute;inset:22px 24px auto;display:flex;justify-content:space-between;font-family:var(--f-num);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);pointer-events:none}
+.hero-meta span::before{content:"+";color:var(--accent);margin-right:.6em;font-weight:700}
+.hero .eyebrow{color:var(--ink);background:var(--surface);border:1px solid var(--line);padding:6px 12px;border-radius:999px;font-size:.68rem}
+.hero .eyebrow b{color:var(--accent);font-weight:700}
+.hero h1 em{color:var(--accent);text-decoration:none}
+.hero .cta{border-radius:999px;padding:13px 22px}
+.hero .cta:hover{transform:none}
+.ticker{position:relative;background:var(--ink);color:#F4F2ED;overflow:hidden;white-space:nowrap;font-family:var(--f-num);font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;padding-block:12px}
+.ticker div{display:inline-flex;animation:tick 40s linear infinite}
+.ticker span{padding-inline:22px}
+.ticker span:nth-child(even){color:var(--accent);padding-inline:0}
+@keyframes tick{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker div{animation:none}}
+@media (max-width:760px){.hero-meta{inset:14px 16px auto;font-size:.62rem}.hero-meta span:last-child{display:none}.hero::before{background-size:44px 44px}.hero .eyebrow{border-radius:12px;line-height:1.6;max-width:300px}}
 </style>
 
 <header class="bar">
@@ -326,13 +333,15 @@ body.detail-open{overflow:hidden}
   <div class="wrap">
     <div>
       <div class="hero-brand" aria-hidden="true"><div class="logo" id="brandGhost"><i>TS</i>TacoStore</div></div>
-      <div class="eyebrow">Dragon Ball Super Card Game · Masters y Fusion World</div>
+      <div class="eyebrow">Dragon Ball Super Card Game <b>·</b> Masters y Fusion World</div>
       <h1><em>Sobres</em>, cajas y mazos listos para tu próximo torneo</h1>
       <p>Solo producto sellado, con envío desde Madrid. Tú pones las manos, nosotros el sobre sin abrir.</p>
       <a class="cta" href="#catalogo">Ver catálogo →</a>
     </div>
     <div class="hero-stack" aria-hidden="true"><span></span><span></span><span></span></div>
   </div>
+  <div class="hero-meta" aria-hidden="true"><span>Est. Madrid</span><span>DBSCG · Sealed only</span></div>
+  <div class="ticker" aria-hidden="true"><div><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span></div></div>
 </section>
 
 <main class="wrap">
