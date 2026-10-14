@@ -1,0 +1,9 @@
+{
+  "name": "tacostore",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "stripe": "^23.0.0"
+  }
+}

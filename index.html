@@ -441,7 +441,7 @@ body.detail-open{overflow:hidden}
     <div class="row muted"><span>Envío</span><span id="ship">—</span></div>
     <div class="row total"><span>Total</span><span id="total">0,00 €</span></div>
     <button class="checkout" id="checkout" disabled>Finalizar compra</button>
-    <p class="note">Envío gratis a partir de 50 €. El pago con Stripe llegará en la siguiente fase.</p>
+    <p class="note">Envío gratis a partir de 50 €. Pago seguro con Stripe.</p>
   </div>
 </aside>
 <div class="toast" id="toast"></div>
@@ -782,7 +782,23 @@ $("openCart").onclick=()=>openCart(true);
 $("closeCart").onclick=()=>openCart(false);
 $("scrim").onclick=()=>openCart(false);
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") openCart(false); });
-$("checkout").onclick=()=>toast("El pago se activará con Stripe próximamente");
+$("checkout").onclick=async()=>{
+  const btn=$("checkout"), label=btn.textContent;
+  btn.disabled=true; btn.textContent="Redirigiendo…";
+  try{
+    const items=Object.entries(cart).map(([id,qty])=>({id,qty}));
+    const r=await fetch("/api/checkout",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({items})});
+    const d=await r.json();
+    if(!r.ok||!d.url) throw new Error(d.error||"No se pudo iniciar el pago");
+    location.href=d.url;
+  }catch(e){ toast(e.message); btn.disabled=false; btn.textContent=label; }
+};
+{
+  const q=new URLSearchParams(location.search).get("pedido");
+  if(q==="ok"){ cart={}; save(); setTimeout(()=>toast("¡Pago completado! Te enviaremos la confirmación por email"),300); }
+  else if(q==="cancelado") setTimeout(()=>toast("Pago cancelado. Tu carrito sigue guardado"),300);
+  if(q) history.replaceState(null,"",location.pathname);
+}
 
 $("newsForm").addEventListener("submit", e=>{
   e.preventDefault();
