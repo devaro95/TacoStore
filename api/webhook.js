@@ -1,4 +1,5 @@
 import Stripe from "stripe";
+import { sendOrderEmails } from "./_lib/email.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -67,11 +68,13 @@ async function fulfillOrder(sessionId) {
       apikey: SUPABASE_KEY,
       authorization: `Bearer ${SUPABASE_KEY}`,
       "content-type": "application/json",
-      prefer: "resolution=ignore-duplicates,return=minimal",
+      prefer: "resolution=ignore-duplicates,return=representation",
     },
     body: JSON.stringify(order),
   });
   if (!res.ok) throw new Error(`Supabase ${res.status}: ${await res.text()}`);
-  console.log("Pedido guardado:", s.id);
-  // TODO: email de confirmación al cliente y aviso a la tienda.
+  const [saved] = await res.json(); // vacío si el pedido ya existía (evento reenviado)
+  if (!saved) return console.log("Pedido ya registrado:", s.id);
+  console.log("Pedido guardado:", saved.id);
+  await sendOrderEmails(saved);
 }
