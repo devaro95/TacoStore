@@ -317,6 +317,18 @@ body.detail-open{overflow:hidden}
 .f-col a{color:#FAFAF8}
 .f-col a:hover{color:var(--accent)}
 .f-bottom{border-top-color:rgba(250,250,248,.14)}
+
+/* Bloque info: producto sellado */
+.info{background:var(--ink);color:#FAFAF8;padding-block:clamp(56px,9vw,104px)}
+.info h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2.6rem,8vw,6.4rem);line-height:.95;letter-spacing:-.01em;margin:0 0 .3em;text-wrap:balance}
+.info h2 em{font-style:normal;color:var(--accent)}
+.info .lead{max-width:52ch;color:rgba(250,250,248,.65);font-size:1.05rem;margin:0 0 clamp(36px,6vw,64px)}
+.info ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(250,250,248,.16)}
+.info li{padding:22px 24px 0 0}
+.info li+li{padding-left:24px;border-left:1px solid rgba(250,250,248,.16)}
+.info b{display:block;font-family:var(--f-display);font-weight:400;font-size:clamp(1.4rem,2.4vw,2rem);line-height:1.1;margin-bottom:8px}
+.info li span{color:rgba(250,250,248,.6);font-size:.92rem}
+@media (max-width:760px){.info ul{grid-template-columns:1fr 1fr;row-gap:28px}.info li:nth-child(3){padding-left:0;border-left:0}}
 </style>
 
 <header class="bar">
@@ -350,6 +362,18 @@ body.detail-open{overflow:hidden}
   <div class="hero-meta" aria-hidden="true"><span>Est. Madrid</span><span>DBSCG · Sealed only</span></div>
 </section>
   <div class="ticker" aria-hidden="true"><div><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span></div></div>
+<section class="info" id="info">
+  <div class="wrap">
+    <h2>Producto <em>sellado</em>.<br>Nada más.</h2>
+    <p class="lead">Solo vendemos cajas, sobres y mazos sin abrir de Dragon Ball Super Card Game. Sin cartas sueltas: lo que abres es lo que viene de fábrica.</p>
+    <ul>
+      <li><b>100 % sellado</b><span>Cajas, sobres y mazos de inicio sin abrir.</span></li>
+      <li><b>Masters y Fusion World</b><span>Los dos juegos, cada uno con su catálogo.</span></li>
+      <li><b>Desde Madrid</b><span>Envíos a toda España, gratis desde 50 €.</span></li>
+      <li><b>Pago seguro</b><span>Tarjeta procesada por Stripe.</span></li>
+    </ul>
+  </div>
+</section>
 
 <main class="wrap">
   <div class="section-head" id="catalogo">
@@ -828,7 +852,7 @@ $("newsForm").addEventListener("submit", e=>{
 
 /* Salto animado del banner al catálogo */
 (function(){
-  const target = $("catalogo"), bar = document.querySelector(".bar");
+  const target = $("info"), bar = document.querySelector(".bar");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let jumping = false, touchY = null;
   const dest = () => Math.round(target.getBoundingClientRect().top + scrollY - bar.offsetHeight - document.querySelector(".ticker").offsetHeight);
