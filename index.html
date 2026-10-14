@@ -290,11 +290,10 @@ body.detail-open{overflow:hidden}
 /* Hero rediseño: papel liso + retícula fina + marcas de imprenta + cinta inferior */
 .bar{box-shadow:none;border-bottom:1px solid var(--line)}
 .hero{background:#F4F2ED;border-bottom:0;flex-direction:column;align-items:stretch;justify-content:center}
-.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
-  background-image:linear-gradient(rgba(22,26,43,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(22,26,43,.06) 1px,transparent 1px);
-  background-size:64px 64px;background-position:center;
-  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 45%,#000 30%,transparent 85%);mask-image:radial-gradient(ellipse 70% 60% at 50% 45%,#000 30%,transparent 85%)}
-.hero::after{content:none}
+.hero{min-height:calc(100svh - var(--bar-h,57px) - 41px);overflow:hidden}
+.hero::before,.hero::after{position:absolute;inset:auto;width:auto;background:none;filter:none;mask-image:none;-webkit-mask-image:none;pointer-events:none;font-family:var(--f-display);font-weight:400;line-height:.8;white-space:nowrap;letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1.5px rgba(22,26,43,.10);font-size:clamp(7rem,23vw,22rem)}
+.hero::before{content:"SOBRES";top:-.12em;left:-.08em}
+.hero::after{content:"CAJAS";bottom:-.14em;right:-.06em;-webkit-text-stroke-color:rgba(240,106,26,.32)}
 .hero>.wrap{flex:1;display:grid;align-content:center}
 .hero-meta{position:absolute;inset:22px 24px auto;display:flex;justify-content:space-between;font-family:var(--f-num);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);pointer-events:none}
 .hero-meta span::before{content:"+";color:var(--accent);margin-right:.6em;font-weight:700}
@@ -303,13 +302,13 @@ body.detail-open{overflow:hidden}
 .hero h1 em{color:var(--accent);text-decoration:none}
 .hero .cta{border-radius:999px;padding:13px 22px}
 .hero .cta:hover{transform:none}
-.ticker{position:relative;background:var(--ink);color:#F4F2ED;overflow:hidden;white-space:nowrap;font-family:var(--f-num);font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;padding-block:12px}
+.ticker{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--bar-h,57px));z-index:19;background:var(--ink);color:#F4F2ED;overflow:hidden;white-space:nowrap;font-family:var(--f-num);font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;padding-block:12px}
 .ticker div{display:inline-flex;animation:tick 40s linear infinite}
 .ticker span{padding-inline:22px}
 .ticker span:nth-child(even){color:var(--accent);padding-inline:0}
 @keyframes tick{to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){.ticker div{animation:none}}
-@media (max-width:760px){.hero-meta{inset:14px 16px auto;font-size:.62rem}.hero-meta span:last-child{display:none}.hero::before{background-size:44px 44px}.hero .eyebrow{border-radius:12px;line-height:1.6;max-width:300px}}
+@media (max-width:760px){.hero-meta{inset:14px 16px auto;font-size:.62rem}.hero-meta span:last-child{display:none}.hero::before{top:.1em}.hero::after{bottom:-.05em}.hero .eyebrow{border-radius:12px;line-height:1.6;max-width:300px}}
 </style>
 
 <header class="bar">
@@ -341,8 +340,8 @@ body.detail-open{overflow:hidden}
     <div class="hero-stack" aria-hidden="true"><span></span><span></span><span></span></div>
   </div>
   <div class="hero-meta" aria-hidden="true"><span>Est. Madrid</span><span>DBSCG · Sealed only</span></div>
-  <div class="ticker" aria-hidden="true"><div><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span></div></div>
 </section>
+  <div class="ticker" aria-hidden="true"><div><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span></div></div>
 
 <main class="wrap">
   <div class="section-head" id="catalogo">
@@ -522,6 +521,7 @@ function ctrlHTML(p, clone){
 var TRASH = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>`;
 $("track").innerHTML = products.map(p=>cardHTML(p,false)).join("") + products.map(p=>cardHTML(p,true)).join("");
 
+(function(){const b=document.querySelector(".bar");const f=()=>document.documentElement.style.setProperty("--bar-h",b.offsetHeight+"px");f();addEventListener("resize",f);})();
 /* Logo: grande en el banner, vuela a la barra al hacer scroll */
 (function(){
   const logo = document.querySelector(".bar .logo"), ghost = $("brandGhost");
@@ -624,7 +624,7 @@ document.addEventListener("click", e=>{
   if(detailId) closeDetail();
   if(currentView !== "home") showView("home");
   const el = $(a.dataset.go), bar = document.querySelector(".bar");
-  scrollTo({top: el.getBoundingClientRect().top + scrollY - bar.offsetHeight - 16, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+  scrollTo({top: el.getBoundingClientRect().top + scrollY - bar.offsetHeight - (document.querySelector(".ticker")?.offsetHeight||0) - 16, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
   if(a.dataset.go==="newsEmail") setTimeout(()=>el.focus({preventScroll:true}), 500);
 });
 
@@ -821,7 +821,7 @@ $("newsForm").addEventListener("submit", e=>{
   const target = $("catalogo"), bar = document.querySelector(".bar");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let jumping = false, touchY = null;
-  const dest = () => Math.round(target.getBoundingClientRect().top + scrollY - bar.offsetHeight);
+  const dest = () => Math.round(target.getBoundingClientRect().top + scrollY - bar.offsetHeight - document.querySelector(".ticker").offsetHeight);
   const inHero = () => scrollY < dest() - 4;
   const upZone = () => scrollY > 0 && scrollY <= dest() + 4;
   const ease = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
