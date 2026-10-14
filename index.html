@@ -1,5 +1,6 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>TacoStore</title>
+<link rel="icon" type="image/png" href="/favicon.png"><link rel="apple-touch-icon" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
@@ -24,6 +25,7 @@ button{font:inherit;cursor:pointer}
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);box-shadow:0 1px 0 rgba(22,26,43,.06),0 4px 14px rgba(22,26,43,.07)}
 .bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:10px}
 .logo{font-family:var(--f-display);font-size:1.3rem;letter-spacing:.01em;display:flex;align-items:center;gap:.45em;line-height:1;white-space:nowrap}
+.logo-img{height:2.4em;width:auto;display:block}
 .logo i{width:1.95em;height:1.95em;font-size:.62em;border-radius:.3em;background:var(--accent);display:grid;place-items:center;transform:rotate(-8deg);font-style:normal;color:var(--accent-ink)}
 .bar .logo{transform-origin:0 0;will-change:transform;position:relative;z-index:1}
 .hero-brand{margin-bottom:28px;display:flex;justify-content:center}
@@ -313,6 +315,7 @@ body.detail-open{overflow:hidden}
 /* Footer a todo el ancho, mismo color que la cinta */
 .site-foot{background:var(--ink);color:#FAFAF8;border-top:0;box-shadow:0 0 0 100vmax var(--ink);clip-path:inset(0 -100vmax -100vmax);margin-top:40px;padding-block:40px 24px}
 .site-foot .logo{color:#FAFAF8}
+.site-foot .logo-img{background:#FAFAF8;border-radius:14px;padding:8px;height:5em}
 .f-brand p,.f-col h3,.f-bottom{color:rgba(250,250,248,.6)}
 .f-col a{color:#FAFAF8}
 .f-col a:hover{color:var(--accent)}
@@ -404,7 +407,7 @@ body.detail-open{overflow:hidden}
 <header class="bar">
   <div class="wrap">
     <div class="bar-left">
-      <a class="logo" href="#inicio" data-view="home"><i>TS</i>TacoStore</a>
+      <a class="logo" href="#inicio" data-view="home"><img class="logo-img" src="/logo.webp" alt="TacoStore" width="548" height="600"></a>
       <nav class="topnav" aria-label="Secciones">
         <a href="#inicio" data-view="home" class="is-active">Inicio</a>
         <a href="#catalogo-completo" data-view="catalog">Catálogo</a>
@@ -421,7 +424,7 @@ body.detail-open{overflow:hidden}
 <section class="hero">
   <div class="wrap">
     <div>
-      <div class="hero-brand" aria-hidden="true"><div class="logo" id="brandGhost"><i>TS</i>TacoStore</div></div>
+      <div class="hero-brand" aria-hidden="true"><div class="logo" id="brandGhost"><img class="logo-img" src="/logo.webp" alt="TacoStore" width="548" height="600"></div></div>
       <div class="eyebrow">Dragon Ball Super Card Game <b>·</b> Masters y Fusion World</div>
       <h1><em>Sobres</em>, cajas y mazos listos para tu próximo torneo</h1>
       <p>Solo producto sellado, con envío desde Madrid. Tú pones las manos, nosotros el sobre sin abrir.</p>
@@ -660,6 +663,7 @@ $("track").innerHTML = products.map(p=>cardHTML(p,false)).join("") + products.ma
   addEventListener("scroll", update, {passive:true});
   addEventListener("resize", measure);
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(measure);
+  const li = logo.querySelector("img"); if(li && !li.complete) li.addEventListener("load", measure);
   measure();
 })();
 
@@ -718,7 +722,7 @@ function descOf(p){
 /* Footer común a todas las pantallas */
 const FOOTER = `
   <div class="f-grid">
-    <div class="f-brand"><div class="logo"><i>TS</i>TacoStore</div>
+    <div class="f-brand"><div class="logo"><img class="logo-img" src="/logo.webp" alt="TacoStore" width="548" height="600"></div>
       <p>Producto sellado de Dragon Ball Super Card Game, Masters y Fusion World, con envío desde Madrid.</p></div>
     <nav class="f-col" aria-label="Tienda"><h3>Tienda</h3><ul>
       <li><a href="#catalogo-completo" data-view="catalog">Catálogo</a></li>
