@@ -49,7 +49,9 @@ async function send(payload) {
     headers: { authorization: `Bearer ${process.env.RESEND_API_KEY}`, "content-type": "application/json" },
     body: JSON.stringify({ from: FROM, ...payload }),
   });
-  if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
+  const text = await res.text();
+  if (!res.ok) throw new Error(`Resend ${res.status}: ${text}`);
+  return text; // {"id":"..."} — el id que aparece en resend.com → Emails
 }
 
 // Nunca lanza: un fallo de email no debe hacer que Stripe reintente el webhook (el pedido ya está guardado).
@@ -78,8 +80,8 @@ export async function sendOrderEmails(order) {
   if (!jobs.length) return "sin destinatarios (falta STORE_EMAIL y email del cliente)";
   const results = await Promise.allSettled(jobs);
   const summary = results
-    .map((r, i) => `${labels[i]}: ${r.status === "fulfilled" ? "ok" : r.reason.message.slice(0, 300)}`)
-    .join(" · ") + (results.some((r) => r.status === "rejected") ? ` · [v4 STORE_EMAIL=${STORE_EMAIL_DEBUG} → ${STORE_EMAIL}]` : "");
+    .map((r, i) => `${labels[i]}: ${r.status === "fulfilled" ? `ok ${r.value}` : r.reason.message.slice(0, 300)}`)
+    .join(" · ") + ` · [v5 key=${(process.env.RESEND_API_KEY || "").slice(0, 7)}… STORE_EMAIL=${STORE_EMAIL_DEBUG} → ${STORE_EMAIL || "(vacío)"}]`;
   console.log("Emails:", summary);
   return summary;
 }
