@@ -381,6 +381,17 @@ body.detail-open{overflow:hidden}
 .ord-actions .cta{border-radius:999px;padding:13px 22px}
 .ord-load{text-align:center;color:var(--muted);padding:80px 0}
 @media (max-width:600px){.ord-meta{grid-template-columns:1fr 1fr}.ord-meta div:nth-child(3){grid-column:1/-1;border-left:0;border-top:1px solid rgba(250,250,248,.14)}.ord-two{grid-template-columns:1fr}.ord-two .ord-sec+.ord-sec{border-left:0;border-top:1px solid var(--line)}}
+
+/* Card unificada: imagen, título, precio y botón dentro del mismo bloque */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;padding-bottom:14px;transition:transform .2s ease,box-shadow .2s ease,border-color .2s}
+.card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(22,26,43,.10);border-color:#DCDCD8}
+.card .thumb,.card:hover .thumb{transform:none;border:0;outline:0;border-radius:0;border-bottom:1px solid var(--line);margin-bottom:12px}
+.card>*:not(.thumb){margin-inline:14px}
+.card .meta{margin-top:auto}
+.card .ctrl .add{gap:8px;white-space:nowrap;letter-spacing:.06em;font-size:.72rem;padding-inline:14px}
+.card .meta{flex-wrap:wrap;row-gap:2px}
+.track .card{width:220px}
+@media (max-width:760px){.track .card{width:180px}.card>*:not(.thumb){margin-inline:12px}.card .ctrl .add{font-size:.66rem;padding-inline:12px}}
 </style>
 
 <header class="bar">
