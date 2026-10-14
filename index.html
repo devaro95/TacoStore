@@ -549,24 +549,26 @@ $("track").innerHTML = products.map(p=>cardHTML(p,false)).join("") + products.ma
 (function(){
   const track = $("track"), box = $("marquee");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let offset = 0, hover = false, nudge = null, last = performance.now();
+  let offset = 0, hover = false, nudge = null, last = performance.now(), idle = 0;
   const half = () => track.scrollWidth / 2;
   const step = () => { const c = track.querySelector(".card"); return c ? c.offsetWidth + parseFloat(getComputedStyle(track).gap) : 220; };
-  const ease = t => 1 - Math.pow(1 - t, 3);
+  const perPage = () => Math.max(1, Math.floor((box.clientWidth + parseFloat(getComputedStyle(track).gap)) / step()));
+  const ease = t => t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
   function frame(now){
     const dt = now - last; last = now;
     const H = half();
     if(nudge){
-      const p = Math.min(1, (now - nudge.t0) / 420);
+      const p = Math.min(1, (now - nudge.t0) / 700);
       offset = nudge.from + (nudge.to - nudge.from) * ease(p);
       if(p === 1) nudge = null;
-    } else if(!hover && !reduce){
-      offset += H / 60000 * dt;
+    } else if(!hover && !reduce && !document.hidden){
+      idle += dt;
+      if(idle >= 3000) go(1);
     }
     track.style.transform = `translateX(${-(((offset % H) + H) % H)}px)`;
     requestAnimationFrame(frame);
   }
-  function go(dir){ const from = offset; nudge = {from, to: from + dir * step(), t0: performance.now()}; }
+  function go(dir){ idle = 0; const base = nudge ? nudge.to : offset; nudge = {from: offset, to: base + dir * perPage() * step(), t0: performance.now()}; }
   $("prev").onclick = () => go(-1);
   $("next").onclick = () => go(1);
   box.addEventListener("mouseenter", () => hover = true);
