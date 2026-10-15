@@ -464,6 +464,24 @@ body.detail-open{overflow:hidden}
 .lang-menu button[aria-checked="true"] b{color:var(--accent)}
 @media (max-width:760px){.lang{margin-right:8px}.lang-btn{padding:6px 9px}.bar .wrap{flex-wrap:wrap;row-gap:6px;column-gap:8px;padding-bottom:0}.bar-left{display:contents}.topnav{order:10;flex-basis:100%;justify-content:space-around;margin:0 -8px;height:42px;border-top:1px solid var(--line)}.topnav a{padding:0 6px;font-size:.9rem}}
 .bar .logo{flex-shrink:0}
+/* Ofertas */
+.card.on-sale{border-color:#F3B48A;box-shadow:0 0 0 1px #F3B48A}
+.card.on-sale:hover{box-shadow:0 14px 34px rgba(240,106,26,.22),0 0 0 1px var(--accent)}
+.sale-tag{position:absolute;top:10px;right:10px;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;width:62px;height:62px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FF8A3D,#E63B1F 70%);color:#fff;box-shadow:0 6px 16px rgba(230,59,31,.45),inset 0 0 0 2px rgba(255,255,255,.35);transform:rotate(12deg);animation:salePulse 2.4s ease-in-out infinite;line-height:1;text-align:center;pointer-events:none}
+.sale-tag b{font-family:var(--f-body);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;font-weight:800}
+.sale-tag i{font-style:normal;font-family:var(--f-num);font-size:1.02rem;font-weight:800;letter-spacing:-.02em;margin-top:2px}
+.sale-tag::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px dashed rgba(230,59,31,.5);animation:saleSpin 10s linear infinite}
+@keyframes salePulse{0%,100%{transform:rotate(12deg) scale(1)}50%{transform:rotate(12deg) scale(1.08)}}
+@keyframes saleSpin{to{transform:rotate(360deg)}}
+.price-pair{display:inline-flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.price-pair .was{font-family:var(--f-num);font-size:.9rem;color:var(--muted);text-decoration-color:#E63B1F;text-decoration-thickness:2px}
+.price.now{color:#E63B1F}
+.d-price-val{display:inline-flex;align-items:center;gap:18px;flex-wrap:wrap;position:relative}
+.d-price-val .price{font-size:clamp(2rem,4vw,2.8rem)}
+.d-price-val .was{font-size:1.2rem}
+.d-price-val .sale-tag{position:static;width:72px;height:72px}
+.line small s{color:var(--muted);margin-right:2px}
+@media (prefers-reduced-motion:reduce){.sale-tag,.sale-tag::after{animation:none}}
 /* Páginas: FAQ y Contacto */
 .page{padding-top:clamp(36px,6vw,72px)}
 .page-hero{text-align:center;max-width:680px;margin:0 auto clamp(28px,4vw,44px)}
@@ -735,7 +753,7 @@ body.detail-open{overflow:hidden}
       <div class="d-info">
         <div class="eyebrow" id="dCode"></div>
         <h1 id="dTitle"></h1>
-        <div class="d-price"><span class="price" id="dPrice"></span><small>IVA incluido</small><span id="dStock"></span></div>
+        <div class="d-price"><span class="d-price-val" id="dPrice"></span><small>IVA incluido</small><span id="dStock"></span></div>
         <p class="d-in-cart" id="dInCart"></p>
         <div class="ctrl" id="dCtrl" data-id="" data-clone="0"></div>
         <div class="d-desc"><h2>Descripción</h2><p id="dDesc"></p></div>
@@ -805,14 +823,18 @@ try { cart = JSON.parse(localStorage.getItem("ts-cart")||"{}") || {}; } catch(e)
 for (const k in cart) if (!byId[k] || !byId[k].stock) delete cart[k];
 const save = () => { try{ localStorage.setItem("ts-cart",JSON.stringify(cart)); }catch(e){} };
 
+/* Ofertas: p.was = precio original cuando hay precio rebajado */
+const salePct = p => p.was ? Math.round((1 - p.price / p.was) * 100) : 0;
+const saleTag = p => p.was ? `<span class="sale-tag"><b>Oferta</b><i>-${salePct(p)}%</i></span>` : "";
+const priceHTML = p => p.was ? `<span class="price-pair"><s class="was">${eur(p.was)}</s><span class="price now">${eur(p.price)}</span></span>` : `<span class="price">${eur(p.price)}</span>`;
 function cardHTML(p, clone){
-  return `<article class="card ${p.stock?"":"is-sold"}" ${clone?'aria-hidden="true"':""}>
+  return `<article class="card ${p.stock?"":"is-sold"} ${p.was?"on-sale":""}" ${clone?'aria-hidden="true"':""}>
     ${p.img
-      ? `<div class="thumb photo"><img src="${p.img}" alt="${p.name}" loading="lazy"><b>${p.code}</b></div>`
-      : `<div class="thumb t-${p.color}"><b>${p.code}</b></div>`}
+      ? `<div class="thumb photo"><img src="${p.img}" alt="${p.name}" loading="lazy"><b>${p.code}</b>${saleTag(p)}</div>`
+      : `<div class="thumb t-${p.color}"><b>${p.code}</b>${saleTag(p)}</div>`}
     <span class="game g-${p.game}">${GAMES[p.game]}</span>
     <h3 data-open="${p.id}" ${clone?"":'tabindex="0" role="link"'}>${p.name}</h3>
-    <div class="meta"><span class="price">${eur(p.price)}</span>
+    <div class="meta">${priceHTML(p)}
       <span class="stock ${p.stock?"ok":"no"}">${p.stock?"Disponible":"Agotado"}</span></div>
     <div class="ctrl" data-id="${p.id}" data-clone="${clone?1:0}">${ctrlHTML(p,clone)}</div>
   </article>`;
@@ -1072,7 +1094,7 @@ function openDetail(id){
   $("dImg").innerHTML = p.img ? `<img src="${p.img}" alt="${p.name}">` : "";
   $("dCode").textContent = `${GAMES[p.game]} · ${p.code}`;
   $("dTitle").textContent = p.name;
-  $("dPrice").textContent = eur(p.price);
+  $("dPrice").innerHTML = priceHTML(p) + saleTag(p);
   $("dStock").innerHTML = `<span class="stock ${p.stock?"ok":"no"}">${p.stock?"Disponible":"Agotado"}</span>`;
   $("dDesc").textContent = descOf(p);
   $("dCtrl").dataset.id = id;
@@ -1122,7 +1144,7 @@ function render(){
     const p=byId[k], q=cart[k];
     return `<div class="line">
       ${p.img ? `<div class="mini photo"><img src="${p.img}" alt=""></div>` : `<div class="mini t-${p.color}"></div>`}
-      <div><h4>${p.name}</h4><small>${eur(p.price)} / ud.</small>
+      <div><h4>${p.name}</h4><small>${p.was ? `<s>${eur(p.was)}</s> ` : ""}${eur(p.price)} / ud.</small>
         <div class="qty"><div class="stepper"><button data-a="dec" data-id="${k}" aria-label="Quitar uno">−</button><b>${q}</b><button data-a="inc" data-id="${k}" aria-label="Añadir uno">+</button></div><button class="rm-item" data-a="rm" data-id="${k}" aria-label="Eliminar del carrito">${TRASH}</button></div>
       </div>
       <span class="sum">${eur(p.price*q)}</span></div>`;
@@ -1311,7 +1333,7 @@ render();
 const SB_URL = "https://gdzsouhiabrhozgpckzc.supabase.co", SB_KEY = "sb_publishable_o7eB7QScWy7F2DKJeMPndw_Fc3Qmdpz";
 (async function syncStock(){
   try{
-    const r = await fetch(`${SB_URL}/rest/v1/products?select=id,name,code,game,color,price,stock_qty,image_url&order=sort`, {headers:{apikey:SB_KEY}});
+    const r = await fetch(`${SB_URL}/rest/v1/products?select=id,name,code,game,color,price,sale_price,stock_qty,image_url&order=sort`, {headers:{apikey:SB_KEY}});
     if(!r.ok) return;
     const rows = await r.json();
     if(!rows.length) return;
@@ -1319,7 +1341,9 @@ const SB_URL = "https://gdzsouhiabrhozgpckzc.supabase.co", SB_KEY = "sb_publisha
     rows.forEach(x => {
       let p = byId[x.id];
       if(!p){ p = {id:x.id, img: x.id.endsWith("-pack") ? IMG_FB09 : IMG_FB08}; products.push(p); byId[x.id] = p; }
-      Object.assign(p, {name:x.name, code:x.code, game:x.game, color:x.color, price:Number(x.price), stock:x.stock_qty > 0, qty:x.stock_qty});
+      const base = Number(x.price), sale = Number(x.sale_price);
+      const onSale = sale > 0 && sale < base;
+      Object.assign(p, {name:x.name, code:x.code, game:x.game, color:x.color, price: onSale ? sale : base, was: onSale ? base : null, stock:x.stock_qty > 0, qty:x.stock_qty});
       if(x.image_url) p.img = x.image_url;
     });
     for(let i = products.length - 1; i >= 0; i--) if(!live.has(products[i].id)){ delete byId[products[i].id]; products.splice(i,1); }

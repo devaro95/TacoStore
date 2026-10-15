@@ -203,6 +203,7 @@
     ["Mín.", "Min.", "Min.", "Min."],
     ["tu@email.com", "you@email.com", "vous@email.com", "du@email.com"],
     ["Idioma", "Language", "Langue", "Sprache"],
+    ["Oferta", "Sale", "Promo", "Angebot"],
     ["TacoStore · Inicio", "TacoStore · Home", "TacoStore · Accueil", "TacoStore · Startseite"],
   ];
   const COL = { en: 1, fr: 2, de: 3 };

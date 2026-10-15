@@ -23,7 +23,7 @@ export async function POST(request) {
   if (ids.some((id) => !/^[a-z0-9-]{1,64}$/.test(id))) return json({ error: "Producto no válido" }, 400);
   let rows;
   try {
-    rows = await db(`products?select=id,name,price,stock_qty,active&id=in.(${ids.join(",")})`);
+    rows = await db(`products?select=id,name,price,sale_price,stock_qty,active&id=in.(${ids.join(",")})`);
   } catch (err) {
     console.error("Error leyendo productos:", err.message);
     return json({ error: "No se pudo iniciar el pago" }, 500);
@@ -39,7 +39,10 @@ export async function POST(request) {
     if (!p || !p.active || p.stock_qty < 1) return json({ error: `Producto agotado: ${p?.name || id}` }, 400);
     if (!(q >= 1 && q <= MAX_QTY)) return json({ error: `Cantidad no válida: ${p.name}` }, 400);
     if (q > p.stock_qty) return json({ error: `Solo quedan ${p.stock_qty} de ${p.name}` }, 400);
-    const cents = Math.round(Number(p.price) * 100);
+    // Precio de oferta solo si es válido (mayor que 0 y menor que el normal)
+    const sale = Number(p.sale_price);
+    const unit = sale > 0 && sale < Number(p.price) ? sale : Number(p.price);
+    const cents = Math.round(unit * 100);
     subtotal += cents * q;
     cart.push([id, q]);
     line_items.push({
