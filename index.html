@@ -185,6 +185,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:1.45rem;margin:0;text-
 .detail{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;padding-top:calc(var(--bar-h,57px) + env(safe-area-inset-top,0px));padding-bottom:env(safe-area-inset-bottom,0px);opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .2s,transform .2s,visibility 0s .2s}
 .detail.open{opacity:1;visibility:visible;transform:none;transition:opacity .2s,transform .2s}
 body.detail-open{overflow:hidden}
+body.detail-open .ticker{visibility:hidden}
 .back{display:inline-flex;align-items:center;gap:8px;margin-block:20px 8px;border:0;background:none;color:var(--muted);font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 0}
 .back:hover{color:var(--accent)}
 .d-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;align-items:start;padding-block:12px 56px}
