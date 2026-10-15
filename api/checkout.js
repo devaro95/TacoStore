@@ -56,7 +56,8 @@ export async function POST(request) {
       mode: "payment",
       line_items,
       // Sin payment_method_types: Stripe muestra los métodos activados en el Dashboard (tarjeta, Link, Apple/Google Pay…)
-      shipping_address_collection: { allowed_countries: ["ES"] },
+      // España y resto de la Unión Europea (mismas tarifas de envío por ahora)
+      shipping_address_collection: { allowed_countries: ["ES", "PT", "FR", "IT", "DE", "AT", "BE", "NL", "LU", "IE", "DK", "SE", "FI", "PL", "CZ", "SK", "SI", "HR", "HU", "RO", "BG", "GR", "CY", "MT", "EE", "LV", "LT"] },
       shipping_options: [
         {
           shipping_rate_data: {
