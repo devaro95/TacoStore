@@ -182,7 +182,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:1.45rem;margin:0;text-
 /* Detalle de producto */
 .card .thumb,.card h3{cursor:pointer}
 .card h3:hover{color:var(--accent)}
-.detail{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;padding-top:calc(53px + env(safe-area-inset-top,0px));padding-bottom:env(safe-area-inset-bottom,0px);opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .2s,transform .2s,visibility 0s .2s}
+.detail{position:fixed;inset:0;z-index:15;background:var(--bg);overflow-y:auto;padding-top:calc(var(--bar-h,57px) + env(safe-area-inset-top,0px));padding-bottom:env(safe-area-inset-bottom,0px);opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .2s,transform .2s,visibility 0s .2s}
 .detail.open{opacity:1;visibility:visible;transform:none;transition:opacity .2s,transform .2s}
 body.detail-open{overflow:hidden}
 .back{display:inline-flex;align-items:center;gap:8px;margin-block:20px 8px;border:0;background:none;color:var(--muted);font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 0}
@@ -913,7 +913,12 @@ $("track").innerHTML = products.map(p=>cardHTML(p,false)).join("") + products.ma
 
 // Ranking de ejemplo: sustituir por los datos reales de ventas
 const bestsellers = ["fb01-box","fb08-box","fb01-pack","fb03-box"];
-$("bestGrid").innerHTML = bestsellers.map((id,i)=>`<li><div class="rank">${String(i+1).padStart(2,"0")}<small>${i===0?"El más vendido":"Puesto "+(i+1)}</small></div>${cardHTML(byId[id],false)}</li>`).join("");
+let bestShown = false;
+function renderBest(){
+  $("bestGrid").innerHTML = bestsellers.filter(id => byId[id]).map((id,i)=>`<li><div class="rank">${String(i+1).padStart(2,"0")}<small>${i===0?"El más vendido":"Puesto "+(i+1)}</small></div>${cardHTML(byId[id],false)}</li>`).join("");
+  if(bestShown) $("bestGrid").querySelectorAll("li").forEach(li => li.classList.add("in"));
+}
+renderBest();
 /* Más vendidos: aparecen de uno en uno al entrar en pantalla */
 (function(){
   const grid = $("bestGrid");
@@ -922,6 +927,7 @@ $("bestGrid").innerHTML = bestsellers.map((id,i)=>`<li><div class="rank">${Strin
   const io = new IntersectionObserver(es=>{
     if(!es.some(e=>e.isIntersecting)) return;
     io.disconnect();
+    bestShown = true;
     [...grid.children].forEach((li,i)=>setTimeout(()=>li.classList.add("in"), i*220));
   }, {threshold:.25});
   io.observe(grid);
@@ -967,7 +973,7 @@ document.addEventListener("click", e=>{
   const a = e.target.closest(".site-foot a"); if(!a || a.dataset.view) return;
   e.preventDefault();
   if(a.hasAttribute("data-soon")){ toast(`${a.textContent}: página en preparación`); return; }
-  if(detailId) closeDetail();
+  if(detailId){ closeDetail(true); history.replaceState({v: currentView}, "", VIEW_HASH[currentView]); }
   if(currentView !== "home") showView("home");
   const el = $(a.dataset.go), bar = document.querySelector(".bar");
   scrollTo({top: el.getBoundingClientRect().top + scrollY - bar.offsetHeight - (document.querySelector(".ticker")?.offsetHeight||0) - 16, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
@@ -976,7 +982,9 @@ document.addEventListener("click", e=>{
 
 /* Vistas: Inicio y Catálogo */
 var currentView = "home";
-function showView(v){
+const VIEW_HASH = {home:"#inicio", catalog:"#catalogo-completo", faq:"#faq", contact:"#contacto", order:"#pedido"};
+function showView(v, fromHistory){
+  if(!fromHistory && (v !== currentView || detailId)) history.pushState({v}, "", VIEW_HASH[v] || "#inicio");
   currentView = v;
   $("viewHome").hidden = v !== "home";
   $("viewCatalog").hidden = v !== "catalog";
@@ -985,7 +993,7 @@ function showView(v){
   $("viewContact").hidden = v !== "contact";
   document.body.classList.toggle("view-catalog", v !== "home");
   document.querySelectorAll(".topnav a").forEach(a => a.classList.toggle("is-active", a.dataset.view === v));
-  if(detailId) closeDetail();
+  if(detailId) closeDetail(true);
   scrollTo(0, 0);
   if(v === "catalog") renderCatalog(true);
   window.updateLogo && updateLogo();
@@ -1087,8 +1095,9 @@ $("fClear").onclick = ()=>{
 $("filters").addEventListener("submit", e => e.preventDefault());
 
 let detailId = null;
-function openDetail(id){
+function openDetail(id, fromHistory){
   const p = byId[id]; if(!p) return;
+  if(!fromHistory && detailId !== id) history.pushState({v: currentView, d: id}, "", "#producto/" + encodeURIComponent(id));
   detailId = id;
   $("dImg").className = "d-img" + (p.img ? "" : " t-" + p.color);
   $("dImg").innerHTML = p.img ? `<img src="${p.img}" alt="${p.name}">` : "";
@@ -1103,12 +1112,29 @@ function openDetail(id){
   $("detail").scrollTop = 0; document.body.classList.add("detail-open"); window.updateLogo && updateLogo();
   $("back").focus({preventScroll:true});
 }
-function closeDetail(){
+function closeDetail(fromHistory){
+  if(!detailId) return;
+  // Si el detalle se abrió desde la propia web, volver = paso atrás del historial
+  if(!fromHistory && history.state && history.state.d){ history.back(); return; }
+  if(!fromHistory) history.replaceState({v: currentView}, "", VIEW_HASH[currentView]);
   detailId = null;
   $("detail").classList.remove("open"); $("detail").setAttribute("aria-hidden","true");
   document.body.classList.remove("detail-open"); window.updateLogo && updateLogo();
 }
-$("back").onclick = closeDetail;
+$("back").onclick = () => closeDetail();
+/* Historial: el botón atrás del navegador cierra el detalle y vuelve entre pantallas */
+function routeFrom(state){
+  let v = state && state.v, d = state && state.d;
+  if(!v){
+    const h = decodeURIComponent(location.hash.slice(1));
+    if(h.startsWith("producto/")) d = h.slice(9);
+    v = Object.keys(VIEW_HASH).find(k => VIEW_HASH[k] === "#" + h) || "home";
+    if(v === "order") v = "home";
+  }
+  if(v !== currentView) showView(v, true);
+  if(d && byId[d]) openDetail(d, true); else if(detailId) closeDetail(true);
+}
+addEventListener("popstate", e => routeFrom(e.state));
 document.addEventListener("keydown", e=>{
   if(e.key==="Escape" && detailId && !$("drawer").classList.contains("open")) closeDetail();
   if(e.key==="Enter" && e.target.dataset && e.target.dataset.open) openDetail(e.target.dataset.open);
@@ -1326,6 +1352,15 @@ $("contactForm").addEventListener("submit", async e=>{
   finally{ btn.disabled = false; }
 });
 
+/* Enlace directo (#faq, #contacto, #producto/fb08-box…) al cargar */
+if(!new URLSearchParams(location.search).get("pedido")){
+  const startHash = location.hash;
+  if(startHash.length > 1) routeFrom(null);
+  history.replaceState({v: currentView}, "", VIEW_HASH[currentView]);
+  if(detailId) history.pushState({v: currentView, d: detailId}, "", "#producto/" + encodeURIComponent(detailId));
+  else if(startHash.startsWith("#producto/")) history.pushState({v: currentView}, "", startHash); // aún cargando productos de la BD
+}
+
 let tt; function toast(t){ const el=$("toast"); el.textContent=t; el.classList.add("show"); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove("show"),1800); }
 render();
 
@@ -1354,7 +1389,8 @@ const SB_URL = "https://gdzsouhiabrhozgpckzc.supabase.co", SB_KEY = "sb_publisha
     $("cFw").textContent = products.filter(p => p.game === "fw").length;
     $("cMasters").textContent = products.filter(p => p.game === "masters").length;
     window.updateGameCounts && updateGameCounts();
-    renderCatalog(true); render();
+    renderCatalog(true); renderBest(); render();
+    if(location.hash.startsWith("#producto/") && !detailId) routeFrom(null);
   }catch(e){ /* sin conexión: se queda la lista local */ }
 })();
 </script>
