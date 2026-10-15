@@ -483,6 +483,12 @@ body.detail-open .ticker{visibility:hidden}
 .d-price-val .sale-tag{position:static;width:72px;height:72px}
 .line small s{color:var(--muted);margin-right:2px}
 @media (prefers-reduced-motion:reduce){.sale-tag,.sale-tag::after{animation:none}}
+#offersGrid{padding-bottom:40px}
+.offers-empty{text-align:center;display:grid;justify-items:center;gap:6px;padding:20px 0 48px}
+.offers-empty p{margin:0;font-weight:700;font-size:1.1rem}
+.offers-empty .sub{font-weight:400;color:var(--muted);font-size:1rem;margin-bottom:14px}
+.nav-offers.has::after{content:"";width:7px;height:7px;border-radius:50%;background:#E63B1F;margin-left:6px;box-shadow:0 0 0 3px rgba(230,59,31,.18);animation:salePulse2 1.8s ease-in-out infinite}
+@keyframes salePulse2{50%{box-shadow:0 0 0 6px rgba(230,59,31,0)}}
 /* Páginas: FAQ y Contacto */
 .page{padding-top:clamp(36px,6vw,72px)}
 .page-hero{text-align:center;max-width:680px;margin:0 auto clamp(28px,4vw,44px)}
@@ -541,6 +547,7 @@ body.detail-open .ticker{visibility:hidden}
       <nav class="topnav" aria-label="Secciones">
         <a href="#inicio" data-view="home" class="is-active">Inicio</a>
         <a href="#catalogo-completo" data-view="catalog">Catálogo</a>
+        <a href="#ofertas" data-view="offers" class="nav-offers">Ofertas</a>
         <a href="#faq" data-view="faq">FAQ</a>
         <a href="#contacto" data-view="contact">Contacto</a>
       </nav>
@@ -683,6 +690,15 @@ body.detail-open .ticker{visibility:hidden}
 <div id="viewOrder" hidden>
   <div class="wrap ord" id="ordBody"><p class="ord-load">Cargando tu pedido…</p></div>
   <div class="wrap"><footer class="site-foot" data-footer></footer></div>
+</div>
+
+<div id="viewOffers" hidden>
+  <div class="wrap page">
+    <header class="page-hero"><span class="kicker">Ofertas</span><h1>Precios <em>rebajados</em></h1><p>Sobres y booster box con descuento mientras duren. Corre, que vuelan.</p></header>
+    <div class="cat-grid" id="offersGrid"></div>
+    <div class="offers-empty" id="offersEmpty" hidden><p>Ahora mismo no hay ofertas activas.</p><p class="sub">Suscríbete a la newsletter y te avisamos de las próximas.</p><a class="cta" href="#catalogo-completo" data-view="catalog">Ver catálogo completo →</a></div>
+    <footer class="site-foot" data-footer></footer>
+  </div>
 </div>
 
 <div id="viewFaq" hidden>
@@ -983,7 +999,7 @@ document.addEventListener("click", e=>{
 
 /* Vistas: Inicio y Catálogo */
 var currentView = "home";
-const VIEW_HASH = {home:"#inicio", catalog:"#catalogo-completo", faq:"#faq", contact:"#contacto", order:"#pedido"};
+const VIEW_HASH = {home:"#inicio", catalog:"#catalogo-completo", offers:"#ofertas", faq:"#faq", contact:"#contacto", order:"#pedido"};
 function showView(v, fromHistory){
   if(!fromHistory && (v !== currentView || detailId)) history.pushState({v}, "", VIEW_HASH[v] || "#inicio");
   currentView = v;
@@ -991,12 +1007,14 @@ function showView(v, fromHistory){
   $("viewCatalog").hidden = v !== "catalog";
   $("viewOrder").hidden = v !== "order";
   $("viewFaq").hidden = v !== "faq";
+  $("viewOffers").hidden = v !== "offers";
   $("viewContact").hidden = v !== "contact";
   document.body.classList.toggle("view-catalog", v !== "home");
   document.querySelectorAll(".topnav a").forEach(a => a.classList.toggle("is-active", a.dataset.view === v));
   if(detailId) closeDetail(true);
   scrollTo(0, 0);
   if(v === "catalog") renderCatalog(true);
+  if(v === "offers") renderOffers();
   window.updateLogo && updateLogo();
 }
 document.addEventListener("click", e=>{
@@ -1155,6 +1173,15 @@ function onAdd(e){
 $("track").addEventListener("click", onAdd);
 $("bestGrid").addEventListener("click", onAdd);
 $("catGrid").addEventListener("click", onAdd);
+$("offersGrid").addEventListener("click", onAdd);
+/* Ofertas: solo productos con precio rebajado; las de mayor descuento primero */
+function renderOffers(){
+  const list = products.filter(p => p.was).sort((a,b) => salePct(b) - salePct(a) || (b.stock - a.stock));
+  $("offersGrid").innerHTML = list.map(p => cardHTML(p,false)).join("");
+  $("offersEmpty").hidden = list.length > 0;
+  document.querySelectorAll(".nav-offers").forEach(a => a.classList.toggle("has", list.length > 0));
+}
+renderOffers();
 
 function render(){
   const ids = Object.keys(cart);
@@ -1390,7 +1417,7 @@ const SB_URL = "https://gdzsouhiabrhozgpckzc.supabase.co", SB_KEY = "sb_publisha
     $("cFw").textContent = products.filter(p => p.game === "fw").length;
     $("cMasters").textContent = products.filter(p => p.game === "masters").length;
     window.updateGameCounts && updateGameCounts();
-    renderCatalog(true); renderBest(); render();
+    renderCatalog(true); renderBest(); renderOffers(); render();
     if(location.hash.startsWith("#producto/") && !detailId) routeFrom(null);
   }catch(e){ /* sin conexión: se queda la lista local */ }
 })();

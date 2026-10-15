@@ -204,6 +204,12 @@
     ["tu@email.com", "you@email.com", "vous@email.com", "du@email.com"],
     ["Idioma", "Language", "Langue", "Sprache"],
     ["Oferta", "Sale", "Promo", "Angebot"],
+    ["Ofertas", "Deals", "Promos", "Angebote"],
+    ["Precios", "Reduced", "Prix", "Reduzierte"],
+    ["rebajados", "prices", "cassés", "Preise"],
+    ["Sobres y booster box con descuento mientras duren. Corre, que vuelan.", "Discounted packs and booster boxes while stocks last. Hurry, they go fast.", "Boosters et displays en promo dans la limite des stocks. Faites vite, ça part vite.", "Reduzierte Booster und Displays, solange der Vorrat reicht. Schnell sein lohnt sich."],
+    ["Ahora mismo no hay ofertas activas.", "There are no active deals right now.", "Aucune promo en cours pour le moment.", "Gerade gibt es keine aktiven Angebote."],
+    ["Suscríbete a la newsletter y te avisamos de las próximas.", "Subscribe to the newsletter and we'll tell you about the next ones.", "Abonnez-vous à la newsletter et nous vous préviendrons des prochaines.", "Abonniere den Newsletter, dann sagen wir dir bei den nächsten Bescheid."],
     ["TacoStore · Inicio", "TacoStore · Home", "TacoStore · Accueil", "TacoStore · Startseite"],
   ];
   const COL = { en: 1, fr: 2, de: 3 };
