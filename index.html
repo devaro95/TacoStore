@@ -462,9 +462,8 @@ body.detail-open{overflow:hidden}
 .lang-menu button:hover{background:var(--bg)}
 .lang-menu button[aria-checked="true"]{background:#FFF4E2;color:#2B140A}
 .lang-menu button[aria-checked="true"] b{color:var(--accent)}
-@media (max-width:760px){.lang{margin-right:8px}.lang-btn{padding:6px 9px}.lang-btn svg{display:none}.topnav a[data-view="home"]{display:none}.bar-left{gap:12px}.topnav a{padding:0 8px;font-size:.88rem}.bar .wrap{gap:8px}}
+@media (max-width:760px){.lang{margin-right:8px}.lang-btn{padding:6px 9px}.bar .wrap{flex-wrap:wrap;row-gap:6px;column-gap:8px;padding-bottom:0}.bar-left{display:contents}.topnav{order:10;flex-basis:100%;justify-content:space-around;margin:0 -8px;height:42px;border-top:1px solid var(--line)}.topnav a{padding:0 6px;font-size:.9rem}}
 .bar .logo{flex-shrink:0}
-@media (max-width:360px){.topnav a{padding:0 5px;font-size:.82rem}.lang{margin-right:4px}.bar-left{gap:8px}}
 /* Páginas: FAQ y Contacto */
 .page{padding-top:clamp(36px,6vw,72px)}
 .page-hero{text-align:center;max-width:680px;margin:0 auto clamp(28px,4vw,44px)}
@@ -523,6 +522,7 @@ body.detail-open{overflow:hidden}
       <nav class="topnav" aria-label="Secciones">
         <a href="#inicio" data-view="home" class="is-active">Inicio</a>
         <a href="#catalogo-completo" data-view="catalog">Catálogo</a>
+        <a href="#faq" data-view="faq">FAQ</a>
         <a href="#contacto" data-view="contact">Contacto</a>
       </nav>
     </div>
