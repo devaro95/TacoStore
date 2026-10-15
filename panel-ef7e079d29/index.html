@@ -1,6 +1,7 @@
 <!doctype html>
-<html lang="es">
+<html lang="es" translate="no">
 <head>
+<meta name="google" content="notranslate">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow,noarchive">
@@ -111,6 +112,31 @@ td.r,th.r{text-align:right}
 .b-off{background:var(--bg);color:var(--muted)}
 tr.off td:not(:last-child){opacity:.55}
 .switch{width:auto;accent-color:var(--accent);transform:scale(1.2)}
+.thumb-btn{position:relative;width:44px;height:44px;flex:0 0 44px;border:1.5px dashed var(--line);border-radius:8px;background:var(--bg) center/contain no-repeat;padding:0;color:var(--muted);font-size:1.1rem}
+.thumb-btn.has{border-style:solid}
+.thumb-btn:hover{border-color:var(--accent);color:var(--accent)}
+.thumb-btn.busy{opacity:.5;cursor:wait}
+.p-cell{display:flex;align-items:center;gap:12px}
+/* Nuevo producto */
+dialog.modal{border:0;border-radius:14px;padding:0;width:min(560px,calc(100% - 24px));box-shadow:0 24px 60px rgba(22,26,43,.25)}
+dialog.modal::backdrop{background:rgba(22,26,43,.45)}
+.modal form{display:grid;gap:14px;padding:22px 22px 18px}
+.modal h2{margin:0;font-size:1.2rem}
+.modal .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal .seg{display:flex;border:1.5px solid var(--line);border-radius:999px;padding:3px;gap:3px}
+.modal .seg label{flex:1;margin:0;text-align:center;border-radius:999px;padding:7px 8px;cursor:pointer;font-size:.8rem;color:var(--ink);text-transform:none;letter-spacing:0}
+.modal .seg input{position:absolute;opacity:0;width:1px;height:1px}
+.modal .seg label:has(input:checked){background:var(--ink);color:#fff}
+.modal .seg label:has(input:focus-visible){outline:3px solid var(--accent)}
+.drop{display:flex;align-items:center;gap:14px;border:1.5px dashed var(--line);border-radius:10px;padding:10px;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400;font-size:.9rem;color:var(--muted);margin:0}
+.drop:hover{border-color:var(--accent)}
+.drop .pv{width:64px;height:64px;flex:0 0 64px;border-radius:8px;background:var(--bg) center/contain no-repeat;display:grid;place-items:center;font-size:1.4rem}
+.drop input{display:none}
+.chk{display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:.9rem;color:var(--ink);margin:0}
+.chk input{width:auto;accent-color:var(--accent)}
+.modal .actions{display:flex;justify-content:flex-end;gap:10px;align-items:center}
+.modal .err{margin-right:auto}
+@media (max-width:560px){.modal .row{grid-template-columns:1fr}}
 
 @media (max-width:980px){
   .order{grid-template-columns:1fr 1fr}
@@ -177,6 +203,7 @@ tr.off td:not(:last-child){opacity:.55}
       <div class="tools">
         <div class="chips" id="skChips" role="group" aria-label="Filtrar stock"></div>
         <input id="skQ" type="search" placeholder="Buscar producto o código" aria-label="Buscar productos">
+        <button class="btn primary" id="newBtn" type="button">+ Nuevo producto</button>
       </div>
       <div class="list">
         <table>
@@ -184,8 +211,31 @@ tr.off td:not(:last-child){opacity:.55}
           <tbody id="skRows"></tbody>
         </table>
       </div>
-      <p class="sub">Los cambios se guardan solos y se ven en la tienda al recargar. Las ventas descuentan stock automáticamente.</p>
+      <p class="sub">Los cambios se guardan solos y se ven en la tienda al recargar. Las ventas descuentan stock automáticamente. Pulsa la miniatura de un producto para cambiar su foto.</p>
+      <input type="file" id="imgPick" accept="image/png,image/jpeg,image/webp" hidden>
     </section>
+
+    <dialog class="modal" id="newDlg" aria-labelledby="newTitle">
+      <form id="newForm" method="dialog" novalidate>
+        <h2 id="newTitle">Nuevo producto</h2>
+        <div class="row">
+          <div><label>Tipo</label><div class="seg"><label><input type="radio" name="kind" value="box" checked>Booster box</label><label><input type="radio" name="kind" value="pack">Sobre</label></div></div>
+          <div><label>Juego</label><div class="seg"><label><input type="radio" name="game" value="fw" checked>Fusion World</label><label><input type="radio" name="game" value="masters">Masters</label></div></div>
+        </div>
+        <div class="row">
+          <div><label for="nCode">Código de la expansión</label><input id="nCode" name="code" style="text-transform:uppercase" placeholder="FB11" required maxlength="12" autocapitalize="characters" spellcheck="false"></div>
+          <div><label for="nSet">Nombre de la expansión <span style="text-transform:none;font-weight:400">(opcional)</span></label><input id="nSet" name="set" placeholder="Saiyan's Pride" maxlength="60"></div>
+        </div>
+        <div><label for="nName">Nombre en la tienda</label><input id="nName" name="name" required maxlength="120"><div class="sub" id="nId"></div></div>
+        <div class="row">
+          <div><label for="nPrice">Precio (€, IVA incl.)</label><input id="nPrice" name="price" type="number" min="0" step="0.05" inputmode="decimal" required></div>
+          <div><label for="nStock">Stock inicial</label><input id="nStock" name="stock" type="number" min="0" step="1" inputmode="numeric" value="0"></div>
+        </div>
+        <div><label>Foto</label><label class="drop"><span class="pv" id="nPv">📷</span><span id="nPvTxt">Elige una imagen (PNG, JPG o WebP, máx. 5 MB)</span><input type="file" name="img" id="nImg" accept="image/png,image/jpeg,image/webp"></label></div>
+        <label class="chk"><input type="checkbox" name="active" checked>Mostrar en la tienda al crearlo</label>
+        <div class="actions"><p class="err" id="nErr"></p><button class="btn" type="button" id="nCancel">Cancelar</button><button class="btn primary" type="submit" id="nSave">Crear producto</button></div>
+      </form>
+    </dialog>
   </main>
 </div>
 
@@ -375,7 +425,7 @@ function renderStock(){
   $("skRows").innerHTML = list.length ? list.map(p => {
     const [cls, txt] = stateOf(p);
     return `<tr data-id="${esc(p.id)}" class="${p.active ? "" : "off"}">
-      <td><strong>${esc(p.name)}</strong><div class="sub num">${esc(p.code)} · ${esc(p.id)}</div></td>
+      <td><div class="p-cell"><button type="button" class="thumb-btn${p.image_url ? " has" : ""}" data-img="${esc(p.id)}" ${p.image_url ? `style="background-image:url('${esc(p.image_url)}')"` : ""} aria-label="Cambiar foto de ${esc(p.name)}" title="Cambiar foto">${p.image_url ? "" : "＋"}</button><div><strong>${esc(p.name)}</strong><div class="sub num">${esc(p.code)} · ${esc(p.id)}</div></div></div></td>
       <td class="hide-sm">${GAMES[p.game] || esc(p.game)}</td>
       <td class="r"><input class="price-in" data-f="price" type="number" min="0" step="0.05" inputmode="decimal" value="${Number(p.price).toFixed(2)}" aria-label="Precio de ${esc(p.name)}"></td>
       <td><div class="qty"><button data-q="-1" aria-label="Restar uno">−</button><input data-f="stock_qty" type="number" min="0" step="1" inputmode="numeric" value="${p.stock_qty}" aria-label="Cantidad de ${esc(p.name)}"><button data-q="1" aria-label="Sumar uno">+</button></div></td>
@@ -404,6 +454,75 @@ $("skRows").addEventListener("click", e => {
   const id = b.closest("tr").dataset.id, p = products.find(x => x.id === id);
   updateProduct(id, { stock_qty: Math.max(0, p.stock_qty + Number(b.dataset.q)) });
 });
+/* ---------- Fotos y nuevos productos ---------- */
+const IMG_TYPES = { "image/png":"png", "image/jpeg":"jpg", "image/webp":"webp" };
+async function uploadImage(id, file){
+  if (!IMG_TYPES[file.type]) throw new Error("La foto debe ser PNG, JPG o WebP");
+  if (file.size > 5 * 1024 * 1024) throw new Error("La foto pesa más de 5 MB");
+  const path = `${id}-${Date.now()}.${IMG_TYPES[file.type]}`;
+  const { error } = await sb.storage.from("products").upload(path, file, { contentType: file.type, cacheControl: "31536000" });
+  if (error) throw new Error(error.message);
+  return sb.storage.from("products").getPublicUrl(path).data.publicUrl;
+}
+let imgFor = null;
+$("skRows").addEventListener("click", e => {
+  const b = e.target.closest("[data-img]"); if (!b) return;
+  imgFor = b.dataset.img; $("imgPick").value = ""; $("imgPick").click();
+});
+$("imgPick").addEventListener("change", async () => {
+  const file = $("imgPick").files[0], id = imgFor; if (!file || !id) return;
+  const b = document.querySelector(`[data-img="${CSS.escape(id)}"]`); if (b) b.classList.add("busy");
+  try { await updateProduct(id, { image_url: await uploadImage(id, file) }); }
+  catch (err) { alert("No se pudo subir la foto: " + err.message); renderStock(); }
+});
+
+const nf = $("newForm"), dlg = $("newDlg");
+const nVal = n => nf.elements[n].value;
+let nameTouched = false;
+function suggest(){
+  const code = nVal("code").trim().toUpperCase(), set = nVal("set").trim(), kind = nVal("kind");
+  if (!nameTouched) nf.elements.name.value = !code ? "" : kind === "box" ? `Booster box ${code}${set ? " " + set : ""} (24 sobres)` : `Sobre ${code}${set ? " " + set : ""}`;
+  $("nId").textContent = code ? `ID: ${code.toLowerCase()}-${kind}` : "";
+}
+["code","set"].forEach(n => nf.elements[n].addEventListener("input", suggest));
+nf.querySelectorAll('[name="kind"]').forEach(r => r.addEventListener("change", suggest));
+nf.elements.name.addEventListener("input", () => { nameTouched = !!nVal("name").trim(); });
+$("nImg").addEventListener("change", () => {
+  const f = $("nImg").files[0];
+  $("nPv").style.backgroundImage = f ? `url(${URL.createObjectURL(f)})` : ""; $("nPv").textContent = f ? "" : "📷";
+  $("nPvTxt").textContent = f ? f.name : "Elige una imagen (PNG, JPG o WebP, máx. 5 MB)";
+});
+$("newBtn").onclick = () => {
+  nf.reset(); nameTouched = false; $("nErr").textContent = ""; $("nImg").dispatchEvent(new Event("change")); suggest();
+  dlg.showModal(); nf.elements.code.focus();
+};
+$("nCancel").onclick = () => dlg.close();
+nf.addEventListener("submit", async e => {
+  e.preventDefault();
+  const err = t => { $("nErr").textContent = t; };
+  const code = nVal("code").trim().toUpperCase(), kind = nVal("kind");
+  const id = `${code.toLowerCase()}-${kind}`, name = nVal("name").trim();
+  const price = Math.round(parseFloat(nVal("price").replace(",", ".")) * 100) / 100, stock = parseInt(nVal("stock") || "0", 10);
+  if (!/^[A-Z0-9]{2,12}$/.test(code)) return err("Escribe el código, p. ej. FB11 o BT25");
+  if (!name) return err("Escribe el nombre del producto");
+  if (!(price > 0)) return err("Pon un precio mayor que 0");
+  if (!(stock >= 0)) return err("El stock no puede ser negativo");
+  if (products.some(p => p.id === id)) return err(`Ya existe un producto con ID ${id}`);
+  const save = $("nSave"); save.disabled = true; save.textContent = "Creando…"; err("");
+  try {
+    const file = $("nImg").files[0];
+    const image_url = file ? await uploadImage(id, file) : null;
+    const sort = Math.max(-1, ...products.map(p => p.sort ?? 0)) + 1;
+    const row = { id, name, code, game: nVal("game"), color: nVal("game") === "fw" ? "red" : "blue", price, stock_qty: stock, active: nf.elements.active.checked, sort, image_url };
+    const { data, error } = await sb.from("products").insert(row).select().single();
+    if (error) throw new Error(error.code === "23505" ? `Ya existe un producto con ID ${id}` : error.message);
+    products.push(data); skFilter = "all"; $("skQ").value = ""; renderStock(); dlg.close();
+    const tr = document.querySelector(`#skRows tr[data-id="${CSS.escape(id)}"]`);
+    if (tr) { tr.scrollIntoView({ block: "center", behavior: "smooth" }); const f = tr.querySelector(".flash"); if (f) { f.hidden = false; setTimeout(() => f.hidden = true, 1600); } }
+  } catch (x) { err("No se pudo crear: " + x.message); }
+  finally { save.disabled = false; save.textContent = "Crear producto"; }
+});
+
 $("skChips").addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) { skFilter = b.dataset.k; renderStock(); } });
 $("skQ").addEventListener("input", renderStock);
 
