@@ -406,6 +406,48 @@ body.detail-open{overflow:hidden}
 .cat-grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
 @media (max-width:760px){.track .card{width:240px}.cat-grid{grid-template-columns:1fr 1fr}}
 @media (max-width:480px){.cat-grid{grid-template-columns:1fr}.best-grid{grid-template-columns:1fr}}
+/* Elige tu juego */
+.games{padding-top:56px}
+.games-head{text-align:center;margin-bottom:26px}
+.games-head .kicker{font-family:var(--f-num);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.games-head h2{font-family:var(--f-body);font-weight:900;letter-spacing:-.02em;font-size:clamp(1.7rem,3.4vw,2.5rem);margin:.2em 0 0;line-height:1.1}
+.games-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;perspective:1100px}
+.game-tile{--mx:50%;--my:50%;--rx:0deg;--ry:0deg;position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;gap:14px;padding:44px 28px 28px;border-radius:22px;text-decoration:none;overflow:hidden;min-height:340px;transform:rotateX(var(--rx)) rotateY(var(--ry));transform-style:preserve-3d;transition:transform .25s ease,box-shadow .3s ease}
+.game-tile::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;padding:2px;background:var(--ring);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;background-size:300% 300%;animation:ring 6s linear infinite}
+.game-tile::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;background:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.28),transparent 45%);opacity:0;transition:opacity .25s}
+.game-tile:hover::after{opacity:1}
+.game-tile img{position:relative;z-index:1;width:min(78%,300px);height:auto;transform:translateZ(40px);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.game-tile:hover img{transform:translateZ(40px) scale(1.06)}
+.game-tile p{position:relative;z-index:1;margin:0;text-align:center;max-width:32ch;font-size:1rem}
+.gt-cta{position:relative;z-index:1;margin-top:auto;display:flex;align-items:center;gap:14px;font-family:var(--f-num);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase}
+.gt-cta b{font-size:1.5rem;letter-spacing:0}
+.gt-cta em{font-style:normal;font-weight:700;padding:10px 18px;border-radius:999px;transition:transform .2s}
+.game-tile:hover .gt-cta em{transform:translateX(4px)}
+.gt-glow{position:absolute;inset:-30%;z-index:-1;background:var(--aura);filter:blur(40px);opacity:.55;transition:opacity .3s}
+.game-tile:hover .gt-glow{opacity:.9}
+.gt-fan{position:absolute;z-index:0;left:6px;bottom:-26px;width:58px;height:82px;transform:rotate(-8deg)}
+.gt-fan i{position:absolute;inset:0;border-radius:7px;background:var(--card);border:2px solid rgba(255,255,255,.7);box-shadow:0 6px 14px rgba(0,0,0,.25);transform-origin:50% 120%;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.gt-fan i::after{content:"★";position:absolute;inset:0;display:grid;place-items:center;color:rgba(255,255,255,.85);font-size:20px}
+.gt-fan i:nth-child(1){transform:rotate(-10deg)}
+.gt-fan i:nth-child(2){transform:rotate(0deg)}
+.gt-fan i:nth-child(3){transform:rotate(10deg)}
+.game-tile:hover .gt-fan i:nth-child(1){transform:rotate(-34deg) translateX(-10px)}
+.game-tile:hover .gt-fan i:nth-child(3){transform:rotate(34deg) translateX(10px)}
+.gt-fw{background:#05060A;color:#C9D2E3;box-shadow:0 18px 40px rgba(5,6,10,.35);--ring:linear-gradient(120deg,#00E5FF,#FF2BD6,#7A5CFF,#00E5FF);--aura:radial-gradient(circle at 20% 80%,rgba(0,229,255,.45),transparent 40%),radial-gradient(circle at 85% 20%,rgba(255,43,214,.45),transparent 40%);--card:linear-gradient(150deg,#00E5FF,#7A5CFF 55%,#FF2BD6)}
+.gt-fw .gt-cta{color:#FFFFFF}
+.gt-fw img{mix-blend-mode:screen}
+.gt-masters .gt-fan{left:auto;right:6px;transform:rotate(8deg)}
+.gt-fw .gt-cta em{background:linear-gradient(90deg,#00E5FF,#FF2BD6);color:#05060A}
+.gt-fw:hover{box-shadow:0 24px 60px rgba(122,92,255,.45)}
+.gt-masters{background:#FFFBF2;color:#6B4A33;box-shadow:0 18px 40px rgba(90,46,18,.18);--ring:linear-gradient(120deg,#F5C542,#E9A552,#C8102E,#F5C542);--aura:radial-gradient(circle at 80% 80%,rgba(245,197,66,.55),transparent 42%),radial-gradient(circle at 15% 15%,rgba(233,165,82,.4),transparent 40%);--card:linear-gradient(150deg,#F5C542,#E9A552 55%,#C8102E)}
+.gt-masters .gt-cta{color:#2B140A}
+.gt-masters .gt-cta em{background:#2B140A;color:#FFE7A8}
+.gt-masters:hover{box-shadow:0 24px 60px rgba(233,165,82,.45)}
+@keyframes ring{to{background-position:300% 0}}
+.games-grid.anim .game-tile{opacity:0;translate:0 30px;transition:opacity .6s ease,translate .6s cubic-bezier(.2,.8,.2,1),transform .25s ease,box-shadow .3s ease}
+.games-grid.anim .game-tile.in{opacity:1;translate:0 0}
+@media (max-width:760px){.games-grid{grid-template-columns:1fr}.game-tile{min-height:290px;padding:36px 20px 22px}.gt-fan{display:none}}
+@media (prefers-reduced-motion:reduce){.game-tile::before{animation:none}.game-tile{transform:none!important}}
 /* Banner a mayor tamaño */
 .hero-brand .logo{font-size:clamp(3.4rem,11vw,8rem)}
 .hero .eyebrow{font-size:.84rem;padding:8px 16px}
@@ -461,6 +503,25 @@ body.detail-open{overflow:hidden}
 </section>
 
 <main class="wrap">
+  <section class="games" aria-labelledby="gamesTitle">
+    <div class="games-head"><span class="kicker">Elige tu juego</span><h2 id="gamesTitle">Dos juegos, una colección</h2></div>
+    <div class="games-grid">
+      <a class="game-tile gt-fw" href="#catalogo-completo" data-game-go="fw">
+        <span class="gt-glow" aria-hidden="true"></span>
+        <span class="gt-fan" aria-hidden="true"><i></i><i></i><i></i></span>
+        <img src="/logo-fw.webp" alt="Dragon Ball Super Card Game Fusion World" width="275" height="162" loading="lazy">
+        <p>La generación actual del juego, con las expansiones FB más recientes.</p>
+        <span class="gt-cta"><b id="gcFw">0</b> productos <em>Ver catálogo →</em></span>
+      </a>
+      <a class="game-tile gt-masters" href="#catalogo-completo" data-game-go="masters">
+        <span class="gt-glow" aria-hidden="true"></span>
+        <span class="gt-fan" aria-hidden="true"><i></i><i></i><i></i></span>
+        <img src="/logo-masters.webp" alt="Dragon Ball Super Card Game Masters" width="264" height="126" loading="lazy">
+        <p>El juego original de siempre, con sus expansiones BT.</p>
+        <span class="gt-cta"><b id="gcMasters">0</b> productos <em>Ver catálogo →</em></span>
+      </a>
+    </div>
+  </section>
   <div class="section-head" id="catalogo">
     <div class="head-text">
       <h2>Catálogo</h2>
@@ -798,6 +859,38 @@ document.querySelectorAll(".game-tabs button").forEach(b => b.addEventListener("
   document.querySelectorAll(".game-tabs button").forEach(x => { x.classList.toggle("is-on", x === b); x.setAttribute("aria-selected", String(x === b)); });
   renderCatalog(true);
 }));
+/* Elige tu juego: tilt 3D, aparición y salto al catálogo filtrado */
+(function(){
+  const tiles = [...document.querySelectorAll(".game-tile")], grid = document.querySelector(".games-grid");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.updateGameCounts = () => {
+    $("gcFw").textContent = products.filter(p => p.game === "fw").length;
+    $("gcMasters").textContent = products.filter(p => p.game === "masters").length;
+  };
+  updateGameCounts();
+  tiles.forEach(t => {
+    t.addEventListener("click", e => {
+      e.preventDefault();
+      showView("catalog");
+      document.querySelector(`.game-tabs button[data-game="${t.dataset.gameGo}"]`)?.click();
+    });
+    if(reduce || !matchMedia("(hover:hover)").matches) return;
+    t.addEventListener("pointermove", e => {
+      const r = t.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      t.style.setProperty("--mx", x*100 + "%"); t.style.setProperty("--my", y*100 + "%");
+      t.style.setProperty("--ry", (x - .5) * 10 + "deg"); t.style.setProperty("--rx", (.5 - y) * 10 + "deg");
+    });
+    t.addEventListener("pointerleave", () => { t.style.setProperty("--rx","0deg"); t.style.setProperty("--ry","0deg"); });
+  });
+  if(reduce || !("IntersectionObserver" in window)) return;
+  grid.classList.add("anim");
+  const io = new IntersectionObserver(es => {
+    if(!es.some(e => e.isIntersecting)) return;
+    io.disconnect();
+    tiles.forEach((t,i) => setTimeout(() => t.classList.add("in"), i*180));
+  }, {threshold:.2});
+  io.observe(grid);
+})();
 function filtered(){
   const min = parseFloat($("fMin").value), max = parseFloat($("fMax").value);
   return products.filter(p =>
@@ -1091,6 +1184,7 @@ const SB_URL = "https://gdzsouhiabrhozgpckzc.supabase.co", SB_KEY = "sb_publisha
     $("cAll").textContent = products.length;
     $("cFw").textContent = products.filter(p => p.game === "fw").length;
     $("cMasters").textContent = products.filter(p => p.game === "masters").length;
+    window.updateGameCounts && updateGameCounts();
     renderCatalog(true); render();
   }catch(e){ /* sin conexión: se queda la lista local */ }
 })();
