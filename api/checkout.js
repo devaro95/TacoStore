@@ -10,9 +10,9 @@ const json = (body, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
 
 export async function POST(request) {
-  let items;
+  let items, lang;
   try {
-    ({ items } = await request.json());
+    ({ items, lang } = await request.json());
   } catch {
     return json({ error: "Petición no válida" }, 400);
   }
@@ -69,7 +69,7 @@ export async function POST(request) {
         },
       ],
       phone_number_collection: { enabled: true },
-      locale: "es",
+      locale: ["es", "en", "fr", "de"].includes(lang) ? lang : "es",
       metadata: { cart: JSON.stringify(cart) },
       success_url: `${origin}/?pedido=ok&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/?pedido=cancelado`,

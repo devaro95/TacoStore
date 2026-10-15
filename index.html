@@ -451,6 +451,20 @@ body.detail-open{overflow:hidden}
 .all-cat{display:flex;justify-content:center;padding:28px 20px 8px}
 .all-cat .cta{border-radius:999px;padding:14px 28px;font-size:.95rem}
 .all-cat .cta:hover{transform:translateX(3px)}
+/* Selector de idioma */
+.lang{position:relative;align-self:center;margin-left:auto;margin-right:14px}
+.lang-btn{display:flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 12px;font-family:var(--f-num);font-weight:700;font-size:.8rem;letter-spacing:.06em;cursor:pointer;transition:border-color .15s,color .15s}
+.lang-btn:hover,.lang-btn[aria-expanded="true"]{border-color:var(--ink)}
+.lang-btn svg{width:18px;height:18px}
+.lang-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:40;list-style:none;margin:0;padding:6px;min-width:170px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 34px rgba(22,26,43,.16)}
+.lang-menu button{width:100%;display:flex;align-items:center;gap:12px;border:0;background:transparent;color:var(--ink);font:inherit;font-size:.95rem;padding:10px 12px;border-radius:10px;cursor:pointer;text-align:left}
+.lang-menu button b{font-family:var(--f-num);font-size:.75rem;color:var(--muted);width:22px}
+.lang-menu button:hover{background:var(--bg)}
+.lang-menu button[aria-checked="true"]{background:#FFF4E2;color:#2B140A}
+.lang-menu button[aria-checked="true"] b{color:var(--accent)}
+@media (max-width:760px){.lang{margin-right:8px}.lang-btn{padding:6px 9px}.lang-btn svg{display:none}.topnav a[data-view="home"]{display:none}.bar-left{gap:12px}.topnav a{padding:0 8px;font-size:.88rem}.bar .wrap{gap:8px}}
+.bar .logo{flex-shrink:0}
+@media (max-width:360px){.topnav a{padding:0 5px;font-size:.82rem}.lang{margin-right:4px}.bar-left{gap:8px}}
 /* Páginas: FAQ y Contacto */
 .page{padding-top:clamp(36px,6vw,72px)}
 .page-hero{text-align:center;max-width:680px;margin:0 auto clamp(28px,4vw,44px)}
@@ -505,7 +519,7 @@ body.detail-open{overflow:hidden}
 <header class="bar">
   <div class="wrap">
     <div class="bar-left">
-      <div class="logo"><img class="logo-img" src="/logo.webp?v=2" alt="TacoStore" width="563" height="600"></div>
+      <a class="logo" href="#inicio" data-view="home" aria-label="TacoStore · Inicio"><img class="logo-img" src="/logo.webp?v=2" alt="TacoStore" width="563" height="600"></a>
       <nav class="topnav" aria-label="Secciones">
         <a href="#inicio" data-view="home" class="is-active">Inicio</a>
         <a href="#catalogo-completo" data-view="catalog">Catálogo</a>
@@ -695,7 +709,7 @@ body.detail-open{overflow:hidden}
           <label>Email<input name="email" type="email" autocomplete="email" required maxlength="120"></label>
         </div>
         <div class="cf-row">
-          <label>Motivo<select name="topic"><option>Un pedido</option><option>Producto o stock</option><option>Preventas</option><option>Otro</option></select></label>
+          <label>Motivo<select name="topic"><option value="Un pedido">Un pedido</option><option value="Producto o stock">Producto o stock</option><option value="Preventas">Preventas</option><option value="Otro">Otro</option></select></label>
           <label><span>Nº de pedido <small>(opcional)</small></span><input name="order" maxlength="40"></label>
         </div>
         <label>Mensaje<textarea name="message" rows="6" required maxlength="3000"></textarea></label>
@@ -1141,7 +1155,7 @@ $("checkout").onclick=async()=>{
   btn.disabled=true; btn.textContent="Redirigiendo…";
   try{
     const items=Object.entries(cart).map(([id,qty])=>({id,qty}));
-    const r=await fetch("/api/checkout",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({items})});
+    const r=await fetch("/api/checkout",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({items, lang: window.tsLang || "es"})});
     const d=await r.json();
     if(!r.ok||!d.url) throw new Error(d.error||"No se pudo iniciar el pago");
     location.href=d.url;
@@ -1319,5 +1333,6 @@ const SB_URL = "https://gdzsouhiabrhozgpckzc.supabase.co", SB_KEY = "sb_publisha
   }catch(e){ /* sin conexión: se queda la lista local */ }
 })();
 </script>
+<script src="/i18n.js"></script>
 
 </body></html>
