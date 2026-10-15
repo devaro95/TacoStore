@@ -104,3 +104,18 @@ export async function sendShippedEmail(order) {
     ...(STORE_EMAIL && { reply_to: STORE_EMAIL }),
   });
 }
+
+// Formulario de contacto de la web → buzón de la tienda (STORE_EMAIL), con reply_to al cliente.
+export async function sendContactEmail({ name, email, topic, order, message }) {
+  if (!process.env.RESEND_API_KEY) throw new Error("RESEND_API_KEY no configurada");
+  if (!STORE_EMAIL) throw new Error("STORE_EMAIL no configurada");
+  const html = `<!doctype html><html><body style="font-family:Arial,Helvetica,sans-serif;color:#18181b">
+<h2 style="margin:0 0 12px">Nuevo mensaje de contacto</h2>
+<p style="margin:0 0 4px"><b>Nombre:</b> ${esc(name)}</p>
+<p style="margin:0 0 4px"><b>Email:</b> ${esc(email)}</p>
+<p style="margin:0 0 4px"><b>Motivo:</b> ${esc(topic)}</p>
+${order ? `<p style="margin:0 0 4px"><b>Nº de pedido:</b> ${esc(order)}</p>` : ""}
+<p style="margin:16px 0 0;white-space:pre-wrap;line-height:1.5">${esc(message)}</p>
+</body></html>`;
+  return send({ to: [STORE_EMAIL], reply_to: email, subject: `[Contacto] ${topic} · ${name}`, html });
+}

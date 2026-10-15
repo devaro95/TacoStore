@@ -448,6 +448,50 @@ body.detail-open{overflow:hidden}
 .games-grid.anim .game-tile.in{opacity:1;translate:0 0}
 @media (max-width:760px){.games-grid{grid-template-columns:1fr}.game-tile{min-height:290px;padding:36px 20px 22px}.gt-fan{display:none}}
 @media (prefers-reduced-motion:reduce){.game-tile::before{animation:none}.game-tile{transform:none!important}}
+.all-cat{display:flex;justify-content:center;padding:28px 20px 8px}
+.all-cat .cta{border-radius:999px;padding:14px 28px;font-size:.95rem}
+.all-cat .cta:hover{transform:translateX(3px)}
+/* Páginas: FAQ y Contacto */
+.page{padding-top:clamp(36px,6vw,72px)}
+.page-hero{text-align:center;max-width:680px;margin:0 auto clamp(28px,4vw,44px)}
+.page-hero .kicker{font-family:var(--f-num);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.page-hero h1{font-family:var(--f-body);font-weight:900;letter-spacing:-.025em;font-size:clamp(2.1rem,5vw,3.4rem);line-height:1.05;margin:.2em 0 .3em}
+.page-hero h1 em{font-style:normal;color:var(--accent)}
+.page-hero p{color:var(--muted);margin:0;font-size:1.08rem}
+.faq-wrap{max-width:820px;margin:0 auto;display:grid;gap:34px}
+.faq-group h2{font-family:var(--f-num);font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:700}
+.faq-item{background:var(--surface);border:1px solid var(--line);border-radius:16px;margin-bottom:10px;transition:border-color .2s,box-shadow .2s}
+.faq-item[open]{border-color:#EBCB9E;box-shadow:0 8px 24px rgba(90,46,18,.08)}
+.faq-item summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 20px;font-weight:700;font-size:1.02rem}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary span{flex:0 0 28px;height:28px;border-radius:50%;background:var(--bg);border:1px solid var(--line);position:relative;transition:transform .25s,background .2s}
+.faq-item summary span::before,.faq-item summary span::after{content:"";position:absolute;left:50%;top:50%;width:11px;height:2px;background:var(--ink);border-radius:2px;translate:-50% -50%}
+.faq-item summary span::after{rotate:90deg;transition:rotate .25s}
+.faq-item[open] summary span{background:var(--accent);border-color:var(--accent)}
+.faq-item[open] summary span::before,.faq-item[open] summary span::after{background:#fff}
+.faq-item[open] summary span::after{rotate:0deg}
+.faq-item summary:hover span{border-color:var(--accent)}
+.faq-item p{margin:0;padding:0 20px 20px;color:var(--muted);line-height:1.6}
+.page-cta{text-align:center;margin:44px auto 0;display:grid;justify-items:center;gap:12px}
+.page-cta p{margin:0;font-weight:700;font-size:1.15rem}
+.page .cta{border-radius:999px;padding:13px 24px}
+.contact-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:28px;align-items:start;max-width:1000px;margin:0 auto}
+.contact-form{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:clamp(20px,3vw,32px);display:grid;gap:16px;box-shadow:0 12px 32px rgba(22,26,43,.06)}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.contact-form label{display:grid;gap:6px;font-weight:700;font-size:.88rem}
+.contact-form label small{font-weight:400;color:var(--muted)}
+.contact-form input,.contact-form select,.contact-form textarea{font:inherit;font-size:1rem;font-weight:400;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;width:100%;box-sizing:border-box;transition:border-color .15s,background .15s}
+.contact-form textarea{resize:vertical;min-height:140px}
+.contact-form input:focus,.contact-form select:focus,.contact-form textarea:focus{outline:none;border-color:var(--accent);background:var(--surface)}
+.contact-form .cta{justify-self:start}
+.contact-form .cta:disabled{opacity:.6;cursor:wait}
+.cf-trap{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+.contact-info{display:grid;gap:14px}
+.ci-card{background:linear-gradient(160deg,#FFF4E2,#FBE3C0);border:1px solid #EBCB9E;border-radius:18px;padding:18px 20px}
+.ci-card b{display:block;margin-bottom:4px;color:#2B140A}
+.ci-card p{margin:0;color:#6B4A33;font-size:.95rem}
+.ci-card a{display:inline-block;margin-top:8px;color:var(--accent);font-weight:700;text-decoration:none}
+@media (max-width:760px){.contact-grid{grid-template-columns:1fr}.cf-row{grid-template-columns:1fr}.contact-form .cta{justify-self:stretch;justify-content:center}}
 /* Banner a mayor tamaño */
 .hero-brand .logo{font-size:clamp(3.4rem,11vw,8rem)}
 .hero .eyebrow{font-size:.84rem;padding:8px 16px}
@@ -465,6 +509,7 @@ body.detail-open{overflow:hidden}
       <nav class="topnav" aria-label="Secciones">
         <a href="#inicio" data-view="home" class="is-active">Inicio</a>
         <a href="#catalogo-completo" data-view="catalog">Catálogo</a>
+        <a href="#contacto" data-view="contact">Contacto</a>
       </nav>
     </div>
     <button class="cart-btn" id="openCart" aria-label="Abrir carrito">
@@ -536,6 +581,7 @@ body.detail-open{overflow:hidden}
   </div>
 </main>
 <div class="marquee" id="marquee"><div class="track" id="track"></div></div>
+<div class="all-cat"><a class="cta" href="#catalogo-completo" data-view="catalog">Ver catálogo completo →</a></div>
 
 <div class="wrap">
   <section class="best" aria-labelledby="bestTitle">
@@ -604,6 +650,67 @@ body.detail-open{overflow:hidden}
 <div id="viewOrder" hidden>
   <div class="wrap ord" id="ordBody"><p class="ord-load">Cargando tu pedido…</p></div>
   <div class="wrap"><footer class="site-foot" data-footer></footer></div>
+</div>
+
+<div id="viewFaq" hidden>
+  <div class="wrap page">
+    <header class="page-hero"><span class="kicker">Ayuda</span><h1>Preguntas <em>frecuentes</em></h1><p>Pedidos, envíos, productos y devoluciones. Si no encuentras tu respuesta, escríbenos.</p></header>
+    <div class="faq-wrap">
+      <section class="faq-group"><h2>Pedidos y pago</h2>
+        <details class="faq-item"><summary>¿Cómo hago un pedido?<span aria-hidden="true"></span></summary><p>Añade los productos al carrito y pulsa «Finalizar compra». Te llevaremos a la pasarela de pago segura, donde indicas tus datos de envío y pagas con tarjeta. Al terminar verás el resumen con tu número de pedido.</p></details>
+        <details class="faq-item"><summary>¿Qué formas de pago aceptáis?<span aria-hidden="true"></span></summary><p>Pago con tarjeta a través de Stripe. Tus datos de tarjeta nunca pasan por nuestra web: se introducen directamente en la pasarela cifrada.</p></details>
+        <details class="faq-item"><summary>¿Los precios incluyen IVA?<span aria-hidden="true"></span></summary><p>Sí. Todos los precios que ves en la tienda llevan el IVA (21 %) incluido. El único extra posible son los gastos de envío, que ves antes de pagar.</p></details>
+        <details class="faq-item"><summary>¿Recibiré confirmación del pedido?<span aria-hidden="true"></span></summary><p>Sí. Te enviamos un email de confirmación al completar el pago y otro cuando el pedido sale de Madrid, con su número de seguimiento.</p></details>
+      </section>
+      <section class="faq-group"><h2>Envíos</h2>
+        <details class="faq-item"><summary>¿A dónde enviáis?<span aria-hidden="true"></span></summary><p>Enviamos desde Madrid a toda España.</p></details>
+        <details class="faq-item"><summary>¿Cuánto cuesta el envío?<span aria-hidden="true"></span></summary><p>3,95 € por pedido. A partir de 50 € de compra, el envío es gratis.</p></details>
+        <details class="faq-item"><summary>¿Cuánto tarda en llegar?<span aria-hidden="true"></span></summary><p>La entrega estimada es de 2 a 5 días laborables desde que sale el pedido.</p></details>
+        <details class="faq-item"><summary>¿Cómo sé dónde está mi paquete?<span aria-hidden="true"></span></summary><p>Cuando lo enviamos te llega un email con el número de seguimiento para consultar su estado en todo momento.</p></details>
+      </section>
+      <section class="faq-group"><h2>Productos</h2>
+        <details class="faq-item"><summary>¿Vendéis cartas sueltas?<span aria-hidden="true"></span></summary><p>No. Solo vendemos producto sellado: sobres sueltos y booster box de Dragon Ball Super Card Game, tanto de Masters como de Fusion World.</p></details>
+        <details class="faq-item"><summary>¿Los productos son originales y vienen precintados?<span aria-hidden="true"></span></summary><p>Sí. Todo el producto es original y llega tal cual sale de fábrica, con su precinto intacto.</p></details>
+        <details class="faq-item"><summary>¿Qué diferencia hay entre Masters y Fusion World?<span aria-hidden="true"></span></summary><p>Masters es el juego original, con las expansiones BT. Fusion World es la generación actual, con las expansiones FB. Son juegos distintos y sus cartas no se mezclan.</p></details>
+        <details class="faq-item"><summary>¿Hacéis preventas?<span aria-hidden="true"></span></summary><p>Sí, cuando hay nuevas expansiones. Suscríbete a la newsletter para enterarte antes que nadie de preventas y reposiciones.</p></details>
+        <details class="faq-item"><summary>Un producto está agotado, ¿volverá?<span aria-hidden="true"></span></summary><p>Normalmente reponemos, pero depende de la distribución. Apúntate a la newsletter o escríbenos y te avisamos.</p></details>
+      </section>
+      <section class="faq-group"><h2>Devoluciones</h2>
+        <details class="faq-item"><summary>¿Puedo devolver un producto?<span aria-hidden="true"></span></summary><p>Sí, tienes 14 días naturales desde que lo recibes para desistir de la compra, siempre que el producto siga precintado y sin abrir. Escríbenos desde la página de contacto con tu número de pedido.</p></details>
+        <details class="faq-item"><summary>¿Y si llega dañado?<span aria-hidden="true"></span></summary><p>Escríbenos cuanto antes con tu número de pedido y unas fotos del paquete y del producto, y lo solucionamos.</p></details>
+      </section>
+    </div>
+    <div class="page-cta"><p>¿Sigues con dudas?</p><a class="cta" href="#contacto" data-view="contact">Escríbenos →</a></div>
+    <footer class="site-foot" data-footer></footer>
+  </div>
+</div>
+
+<div id="viewContact" hidden>
+  <div class="wrap page">
+    <header class="page-hero"><span class="kicker">Contacto</span><h1>¿Hablamos<em>?</em></h1><p>Dudas sobre un pedido, un producto o una preventa. Déjanos tu mensaje y te respondemos por email.</p></header>
+    <div class="contact-grid">
+      <form class="contact-form" id="contactForm" novalidate>
+        <div class="cf-row">
+          <label>Nombre<input name="name" autocomplete="name" required maxlength="80"></label>
+          <label>Email<input name="email" type="email" autocomplete="email" required maxlength="120"></label>
+        </div>
+        <div class="cf-row">
+          <label>Motivo<select name="topic"><option>Un pedido</option><option>Producto o stock</option><option>Preventas</option><option>Otro</option></select></label>
+          <label><span>Nº de pedido <small>(opcional)</small></span><input name="order" maxlength="40"></label>
+        </div>
+        <label>Mensaje<textarea name="message" rows="6" required maxlength="3000"></textarea></label>
+        <label class="cf-trap" aria-hidden="true">Web<input name="website" tabindex="-1" autocomplete="off"></label>
+        <button class="cta" type="submit" id="cfSend">Enviar mensaje →</button>
+        <p class="msg" id="cfMsg" aria-live="polite"></p>
+      </form>
+      <aside class="contact-info">
+        <div class="ci-card"><b>¿Es sobre un pedido?</b><p>Indica tu número de pedido: lo tienes en el email de confirmación. Así te ayudamos más rápido.</p></div>
+        <div class="ci-card"><b>Respuestas rápidas</b><p>Envíos, pagos y devoluciones están resueltos en las preguntas frecuentes.</p><a href="#faq" data-view="faq">Ver preguntas frecuentes →</a></div>
+        <div class="ci-card"><b>Desde Madrid</b><p>Enviamos a toda España. Gratis a partir de 50 €.</p></div>
+      </aside>
+    </div>
+    <footer class="site-foot" data-footer></footer>
+  </div>
 </div>
 
 <section class="detail" id="detail" aria-hidden="true" aria-label="Detalle del producto">
@@ -809,8 +916,8 @@ const FOOTER = `
       <li><a href="#newsEmail" data-go="newsEmail">Newsletter</a></li></ul></nav>
     <nav class="f-col" aria-label="Ayuda"><h3>Ayuda</h3><ul>
       <li><a href="#envios" data-soon>Envíos y devoluciones</a></li>
-      <li><a href="#faq" data-soon>Preguntas frecuentes</a></li>
-      <li><a href="#contacto" data-soon>Contacto</a></li></ul></nav>
+      <li><a href="#faq" data-view="faq">Preguntas frecuentes</a></li>
+      <li><a href="#contacto" data-view="contact">Contacto</a></li></ul></nav>
     <nav class="f-col" aria-label="Legal"><h3>Legal</h3><ul>
       <li><a href="#aviso-legal" data-soon>Aviso legal</a></li>
       <li><a href="#terminos" data-soon>Términos y condiciones</a></li>
@@ -838,7 +945,9 @@ function showView(v){
   $("viewHome").hidden = v !== "home";
   $("viewCatalog").hidden = v !== "catalog";
   $("viewOrder").hidden = v !== "order";
-  document.body.classList.toggle("view-catalog", v === "catalog" || v === "order");
+  $("viewFaq").hidden = v !== "faq";
+  $("viewContact").hidden = v !== "contact";
+  document.body.classList.toggle("view-catalog", v !== "home");
   document.querySelectorAll(".topnav a").forEach(a => a.classList.toggle("is-active", a.dataset.view === v));
   if(detailId) closeDetail();
   scrollTo(0, 0);
@@ -1161,6 +1270,25 @@ async function showOrder(sid){
   });
   document.querySelector(".cta").addEventListener("click", e=>{ e.preventDefault(); jump(); });
 })();
+
+/* Formulario de contacto */
+$("contactForm").addEventListener("submit", async e=>{
+  e.preventDefault();
+  const f = e.target, m = $("cfMsg"), btn = $("cfSend");
+  const d = Object.fromEntries(new FormData(f));
+  const err = t => { m.className = "msg err"; m.textContent = t; };
+  if(!d.name.trim()) return err("Escribe tu nombre");
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email.trim())) return err("Escribe un correo válido, por ejemplo nombre@dominio.com");
+  if(d.message.trim().length < 10) return err("Cuéntanos un poco más en el mensaje");
+  btn.disabled = true; m.className = "msg"; m.textContent = "Enviando…";
+  try{
+    const r = await fetch("/api/contact", {method:"POST", headers:{"content-type":"application/json"}, body: JSON.stringify(d)});
+    const j = await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(j.error || "No se pudo enviar el mensaje");
+    f.reset(); m.className = "msg good"; m.textContent = "¡Mensaje enviado! Te responderemos por email.";
+  }catch(x){ err(x.message); }
+  finally{ btn.disabled = false; }
+});
 
 let tt; function toast(t){ const el=$("toast"); el.textContent=t; el.classList.add("show"); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove("show"),1800); }
 render();
