@@ -490,7 +490,7 @@ body.detail-open{overflow:hidden}
 </section>
   <div class="ticker" aria-hidden="true"><div><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span><span>Producto sellado</span><span>✦</span><span>Masters</span><span>✦</span><span>Fusion World</span><span>✦</span><span>Envío desde Madrid</span><span>✦</span><span>Gratis desde 50 €</span><span>✦</span><span>Pago seguro</span><span>✦</span></div></div>
 <div class="wrap">
-  <section class="games" aria-labelledby="gamesTitle">
+  <section class="games" id="juegos" aria-labelledby="gamesTitle">
     <div class="games-head"><span class="kicker">Elige tu juego</span><h2 id="gamesTitle">Dos juegos, una colección</h2></div>
     <div class="games-grid">
       <a class="game-tile gt-fw" href="#catalogo-completo" data-game-go="fw">
@@ -1121,7 +1121,7 @@ async function showOrder(sid){
 })();
 /* Salto animado del banner al catálogo */
 (function(){
-  const target = $("info"), bar = document.querySelector(".bar");
+  const target = $("juegos"), bar = document.querySelector(".bar");
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let jumping = false, touchY = null;
   const dest = () => Math.round(target.getBoundingClientRect().top + scrollY - bar.offsetHeight - document.querySelector(".ticker").offsetHeight);
